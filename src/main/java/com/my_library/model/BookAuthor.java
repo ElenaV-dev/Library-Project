@@ -1,4 +1,4 @@
-package java.my_library.model;
+package com.my_library.model;
 
 import java.util.Objects;
 import java.util.UUID;
