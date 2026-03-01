@@ -1,5 +1,7 @@
 package com.my_library.database.connection;
 
+import com.my_library.util.constants.ErrorConstants;
+import com.my_library.util.constants.MessageConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,10 +36,10 @@ public final class ConnectionPool {
 
     private void initPoolData() {
         try (Connection testConnection = DriverManager.getConnection(url, user, password)) {
-            LOGGER.info("Test connection successful");
+            LOGGER.info(MessageConstants.TEST_CONNECTION_SUCCESSFUL);
         } catch (SQLException e) {
-            LOGGER.error("Failed to connect to the database. Check your connection parameters", e);
-            throw new RuntimeException("Error connecting to the database", e);
+            LOGGER.error(ErrorConstants.FAILED_TO_CONNECT_TO_THE_DATABASE, e);
+            throw new RuntimeException(ErrorConstants.ERROR_CONNECTING_TO_THE_DATABASE, e);
         }
 
         Connection connection;
@@ -47,8 +49,8 @@ public final class ConnectionPool {
                 connection = DriverManager.getConnection(url, user, password);
                 connectionQueue.put(connection);
             } catch (InterruptedException | SQLException e) {
-                LOGGER.error("Error creating connection", e);
-                throw new RuntimeException("Failed to fill connection pool", e);
+                LOGGER.error(ErrorConstants.ERROR_CREATING_CONNECTION, e);
+                throw new RuntimeException(ErrorConstants.FAILED_TO_FILL_CONNECTION_POOL, e);
             }
         }
     }
@@ -73,8 +75,8 @@ public final class ConnectionPool {
             return connectionQueue.take();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            LOGGER.error("Thread was interrupted", e);
-            throw new RuntimeException("Connection failed", e);
+            LOGGER.error(ErrorConstants.CONNECTION_WAS_INTERRUPTED, e);
+            throw new RuntimeException(ErrorConstants.CONNECTION_FAILED, e);
         }
     }
 
@@ -84,8 +86,8 @@ public final class ConnectionPool {
                 connectionQueue.put(connection);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                LOGGER.error("Thread was interrupted", e);
-                throw new RuntimeException("Connection failed", e);
+                LOGGER.error(ErrorConstants.CONNECTION_WAS_INTERRUPTED, e);
+                throw new RuntimeException(ErrorConstants.CONNECTION_FAILED, e);
             }
         }
     }
