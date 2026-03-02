@@ -8,14 +8,14 @@ public class User {
     private String lastName;
     private String firstName;
     private String role;
-    private Integer iin;
+    private String iin;
     private String address;
     private String phone;
 
     public User() {
     }
 
-    public User(Long id, String lastName, String firstName, String role, Integer iin, String address, String phone) {
+    public User(Long id, String lastName, String firstName, String role, String iin, String address, String phone) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -57,11 +57,11 @@ public class User {
         this.role = role;
     }
 
-    public Integer getIin() {
+    public String getIin() {
         return iin;
     }
 
-    public void setIin(Integer iin) {
+    public void setIin(String iin) {
         this.iin = iin;
     }
 
@@ -85,7 +85,13 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(lastName, user.lastName) && Objects.equals(firstName, user.firstName) && Objects.equals(role, user.role) && Objects.equals(iin, user.iin) && Objects.equals(address, user.address) && Objects.equals(phone, user.phone);
+        return Objects.equals(id, user.id)
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(firstName, user.firstName)
+                && Objects.equals(role, user.role)
+                && Objects.equals(iin, user.iin)
+                && Objects.equals(address, user.address)
+                && Objects.equals(phone, user.phone);
     }
 
     @Override

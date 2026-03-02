@@ -37,7 +37,7 @@ CREATE TABLE public.users (
 	last_name varchar(255) NOT NULL,
 	first_name varchar(255) NOT NULL,
 	"role" varchar(255) NULL,
-	iin int4 NOT NULL,
+	iin varchar(12) NOT NULL,
 	address varchar(255) NULL,
 	phone varchar(25) NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
