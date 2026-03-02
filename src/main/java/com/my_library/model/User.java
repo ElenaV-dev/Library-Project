@@ -7,7 +7,7 @@ public class User {
     private Long id;
     private String lastName;
     private String firstName;
-    private String role;
+    private UserRole role;
     private String iin;
     private String address;
     private String phone;
@@ -15,7 +15,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String lastName, String firstName, String role, String iin, String address, String phone) {
+    public User(Long id, String lastName, String firstName, UserRole role, String iin, String address, String phone) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -49,11 +49,11 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
