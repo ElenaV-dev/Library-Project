@@ -1,5 +1,7 @@
 package com.my_library.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Book {
@@ -9,6 +11,7 @@ public class Book {
     private Integer year;
     private String isbn;
     private String publisher;
+    private List<Author> authors = new ArrayList<>();
 
     public Book() {
     }
@@ -61,15 +64,28 @@ public class Book {
         this.publisher = publisher;
     }
 
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(id, book.id) && Objects.equals(title, book.title) && Objects.equals(year, book.year) && Objects.equals(isbn, book.isbn) && Objects.equals(publisher, book.publisher);
+        return Objects.equals(id, book.id)
+                && Objects.equals(title, book.title)
+                && Objects.equals(year, book.year)
+                && Objects.equals(isbn, book.isbn)
+                && Objects.equals(publisher, book.publisher);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, title, year, isbn, publisher);
     }
+
 }
