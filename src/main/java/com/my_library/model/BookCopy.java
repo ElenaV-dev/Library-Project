@@ -7,12 +7,12 @@ public class BookCopy {
     private Long id;
     private Long bookId;
     private Integer inventoryNumber;
-    private String status;
+    private CopyStatus status;
 
     public BookCopy() {
     }
 
-    public BookCopy(Long id, Long bookId, Integer inventoryNumber, String status) {
+    public BookCopy(Long id, Long bookId, Integer inventoryNumber, CopyStatus status) {
         this.id = id;
         this.bookId = bookId;
         this.inventoryNumber = inventoryNumber;
@@ -43,11 +43,11 @@ public class BookCopy {
         this.inventoryNumber = inventoryNumber;
     }
 
-    public String getStatus() {
+    public CopyStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CopyStatus status) {
         this.status = status;
     }
 
@@ -55,11 +55,13 @@ public class BookCopy {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BookCopy bookCopy = (BookCopy) o;
-        return Objects.equals(id, bookCopy.id) && Objects.equals(bookId, bookCopy.bookId) && Objects.equals(inventoryNumber, bookCopy.inventoryNumber) && Objects.equals(status, bookCopy.status);
+        return Objects.equals(id, bookCopy.id)
+                && Objects.equals(bookId, bookCopy.bookId)
+                && Objects.equals(inventoryNumber, bookCopy.inventoryNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookId, inventoryNumber, status);
+        return Objects.hash(id, bookId, inventoryNumber);
     }
 }
