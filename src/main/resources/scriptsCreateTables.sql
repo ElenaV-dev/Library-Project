@@ -2,8 +2,9 @@ CREATE TABLE public.books (
 	id bigserial NOT NULL,
 	title varchar(255) NOT NULL,
 	"year" int4 NULL,
-	isbn varchar(20) NULL,
+	isbn varchar(20) NOT NULL,
 	publisher varchar(255) NULL,
+	CONSTRAINT books_isbn_unique UNIQUE (isbn),
 	CONSTRAINT books_pkey PRIMARY KEY (id)
 );
 
