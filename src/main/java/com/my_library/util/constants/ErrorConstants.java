@@ -8,6 +8,13 @@ public final class ErrorConstants {
     public static final String FAILED_TO_FILL_CONNECTION_POOL = "Failed to fill connection pool";
     public static final String CONNECTION_WAS_INTERRUPTED = "Connection was interrupted";
     public static final String CONNECTION_FAILED = "Connection failed";
+    public static final String FAILED_TO_CREATE = "Creating %s failed, no %s";
+    public static final String FAILED_TO_UPDATE = "Updating %s failed, no %s";
+    public static final String FAILED_TO_DELETE = "Deleting %s failed, no %s";
+    public static final String BOOK_ID_NULL = "Book ID must not be null for delete";
+    public static final String AUTHOR_ID_NULL = "Author ID must not be null for delete";
+    public static final String FAILED_TO_ADD = "Adding %s failed, no %s";
+    public static final String USER_ID_NULL = "User ID must not be null for delete";
 
     private ErrorConstants() {
     }
