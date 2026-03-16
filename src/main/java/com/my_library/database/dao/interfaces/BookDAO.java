@@ -18,4 +18,6 @@ public interface BookDAO extends GenericDAO<Book, Long> {
     void addAuthorToBook(Long bookId, UUID authorId) throws SQLException;
 
     void removeAuthorFromBook(Long bookId, UUID authorId) throws SQLException;
+
+    boolean isExist(String isbn) throws SQLException;
 }

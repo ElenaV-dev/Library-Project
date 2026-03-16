@@ -32,6 +32,7 @@ public class BookDAOImpl implements BookDAO {
     private static final String DELETE_AUTHOR_FROM_BOOK = "DELETE FROM book_authors " +
             " WHERE book_id = ? AND author_id = ?";
 
+
     public BookDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
@@ -311,6 +312,32 @@ public class BookDAOImpl implements BookDAO {
                 connectionPool.returnConnection(connection);
             }
         }
+    }
+
+    @Override
+    public boolean isExist(String isbn) throws SQLException {
+
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.takeConnection();
+
+            try (PreparedStatement stmt = connection.prepareStatement(SELECT_BOOK_BY_ISBN)) {
+                stmt.setString(1, isbn);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        return true;
+                    }
+                }
+            }
+        } finally {
+            if (connection != null) {
+                connectionPool.returnConnection(connection);
+            }
+        }
+        return false;
     }
 
     private Book mapRow(ResultSet resultSet) throws SQLException {
