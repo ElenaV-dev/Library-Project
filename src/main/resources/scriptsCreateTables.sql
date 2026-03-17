@@ -26,7 +26,7 @@ CREATE TABLE public.book_authors (
 
 CREATE TABLE public.book_copies (
 	id serial4 NOT NULL,
-	book_id int8 NULL,
+	book_id int8 NOT NULL,
 	inventory_number int4 NOT NULL,
 	status varchar(25) NULL,
 	CONSTRAINT book_copies_pkey PRIMARY KEY (id),
