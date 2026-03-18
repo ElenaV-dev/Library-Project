@@ -37,7 +37,7 @@ CREATE TABLE public.users (
 	id serial4 NOT NULL,
 	last_name varchar(255) NOT NULL,
 	first_name varchar(255) NOT NULL,
-	"role" varchar(255) NULL,
+	"role" varchar(255) NOT NULL,
 	iin varchar(12) NOT NULL,
 	address varchar(255) NULL,
 	phone varchar(25) NULL,
