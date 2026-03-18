@@ -7,17 +7,17 @@ public class Loan {
 
     private Long id;
     private Long bookCopyId;
-    private Long readerId;
+    private Long userId;
     private LocalDate loanDate;
     private LocalDate returnDate;
 
     public Loan() {
     }
 
-    public Loan(Long id, Long bookCopyId, Long readerId, LocalDate loanDate, LocalDate returnDate) {
+    public Loan(Long id, Long bookCopyId, Long userId, LocalDate loanDate, LocalDate returnDate) {
         this.id = id;
         this.bookCopyId = bookCopyId;
-        this.readerId = readerId;
+        this.userId = userId;
         this.loanDate = loanDate;
         this.returnDate = returnDate;
     }
@@ -38,12 +38,12 @@ public class Loan {
         this.bookCopyId = bookCopyId;
     }
 
-    public Long getReaderId() {
-        return readerId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setReaderId(Long readerId) {
-        this.readerId = readerId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public LocalDate getLoanDate() {
@@ -66,11 +66,11 @@ public class Loan {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Loan loan = (Loan) o;
-        return Objects.equals(id, loan.id) && Objects.equals(bookCopyId, loan.bookCopyId) && Objects.equals(readerId, loan.readerId) && Objects.equals(loanDate, loan.loanDate) && Objects.equals(returnDate, loan.returnDate);
+        return Objects.equals(id, loan.id) && Objects.equals(bookCopyId, loan.bookCopyId) && Objects.equals(userId, loan.userId) && Objects.equals(loanDate, loan.loanDate) && Objects.equals(returnDate, loan.returnDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookCopyId, readerId, loanDate, returnDate);
+        return Objects.hash(id, bookCopyId, userId, loanDate, returnDate);
     }
 }
