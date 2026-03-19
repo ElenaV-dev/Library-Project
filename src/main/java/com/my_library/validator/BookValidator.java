@@ -8,28 +8,37 @@ public class BookValidator {
 
     private static final int MAX_STRING_LENGTH = 255;
     private static final int MAX_ISBN_LENGTH = 20;
+    private static final String ISBN_REGEX = "[0-9\\-]+";
+    private static final Integer MIN_YEAR = 1450;
 
     public static boolean isValid(Book book) {
-
-        int currentYear = LocalDate.now().getYear();
 
         if (book == null) {
             return false;
         }
 
-        if (book.getTitle() == null || book.getTitle().isBlank() || book.getTitle().length() > MAX_STRING_LENGTH) {
+        String title = book.getTitle();
+        String isbn = book.getIsbn();
+        Integer year = book.getYear();
+        String publisher = book.getPublisher();
+
+        Integer currentYear = LocalDate.now().getYear();
+
+        if (title == null || title.isBlank() || title.trim().length() > MAX_STRING_LENGTH) {
             return false;
         }
 
-        if (book.getIsbn() == null || book.getIsbn().isBlank() || book.getIsbn().length() > MAX_ISBN_LENGTH) {
+        if (isbn == null || isbn.isBlank() || isbn.trim().length() > MAX_ISBN_LENGTH
+                || !isbn.matches(ISBN_REGEX)) {
             return false;
         }
 
-        if (book.getYear() != null && (book.getYear() < 0 || book.getYear() > currentYear)) {
+        if (year != null && (year < MIN_YEAR || year > currentYear)) {
             return false;
         }
 
-        if (book.getPublisher() != null && book.getPublisher().length() > MAX_STRING_LENGTH) {
+        if (publisher != null && (publisher.trim().length() > MAX_STRING_LENGTH
+                || publisher.isBlank())) {
             return false;
         }
         return true;
