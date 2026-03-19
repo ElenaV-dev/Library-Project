@@ -91,6 +91,10 @@ public class BookDAOImpl implements BookDAO {
     @Override
     public void save(Book book) throws SQLException {
 
+        if (book == null) {
+            throw new IllegalArgumentException(ErrorConstants.BOOK_NULL);
+        }
+
         Connection connection = null;
 
         try {
@@ -98,7 +102,7 @@ public class BookDAOImpl implements BookDAO {
 
             try (PreparedStatement stmt = connection.prepareStatement(ADD_BOOK, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, book.getTitle());
-                stmt.setInt(2, book.getYear());
+                stmt.setObject(2, book.getYear(), Types.INTEGER);
                 stmt.setString(3, book.getIsbn());
                 stmt.setString(4, book.getPublisher());
 
@@ -128,6 +132,11 @@ public class BookDAOImpl implements BookDAO {
     @Override
     public void update(Book book) throws SQLException {
 
+        if (book == null) {
+            throw new IllegalArgumentException(ErrorConstants.BOOK_NULL);
+        }
+
+
         Connection connection = null;
 
         try {
@@ -135,7 +144,7 @@ public class BookDAOImpl implements BookDAO {
 
             try (PreparedStatement stmt = connection.prepareStatement(UPDATE_BOOK)) {
                 stmt.setString(1, book.getTitle());
-                stmt.setInt(2, book.getYear());
+                stmt.setObject(2, book.getYear(), Types.INTEGER);
                 stmt.setString(3, book.getIsbn());
                 stmt.setString(4, book.getPublisher());
                 stmt.setLong(5, book.getId());
@@ -344,7 +353,7 @@ public class BookDAOImpl implements BookDAO {
         Book book = new Book();
         book.setId(resultSet.getLong("id"));
         book.setTitle(resultSet.getString("title"));
-        book.setYear(resultSet.getInt("year"));
+        book.setYear(resultSet.getObject("year", Integer.class));
         book.setIsbn(resultSet.getString("isbn"));
         book.setPublisher(resultSet.getString("publisher"));
         return book;

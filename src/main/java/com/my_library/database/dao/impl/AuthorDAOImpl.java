@@ -17,10 +17,10 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     private static final String SELECT_AUTHOR_BY_ID = "SELECT * FROM authors WHERE id = ?";
     private static final String SELECT_ALL_AUTHORS = "SELECT * FROM authors";
-    private static final String ADD_AUTHOR = "INSERT INTO authors (id, lastName, firstName, lifeYears)" +
+    private static final String ADD_AUTHOR = "INSERT INTO authors (id, last_name, first_name, life_years)" +
             " VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_AUTHOR = "UPDATE authors SET LastName = ?, firstName = ?, " +
-            "lifeYears = ? WHERE id = ?";
+    private static final String UPDATE_AUTHOR = "UPDATE authors SET last_name = ?, first_name = ?, " +
+            "life_years = ? WHERE id = ?";
     private static final String DELETE_AUTHOR = "DELETE FROM authors WHERE id = ?";
     private static final String SELECT_ALL_AUTHORS_BY_LAST_NAME = "SELECT * FROM authors " +
             " WHERE LOWER(last_name) = LOWER(?)";
@@ -83,6 +83,11 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
     public void save(Author author) throws SQLException {
+
+        if (author == null) {
+            throw new IllegalArgumentException(ErrorConstants.AUTHOR_NULL);
+        }
+
         if (author.getUuid() == null) {
             author.setUuid(UUID.randomUUID());
         }
@@ -114,6 +119,11 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
     public void update(Author author) throws SQLException {
+
+        if (author == null) {
+            throw new IllegalArgumentException(ErrorConstants.AUTHOR_NULL);
+        }
+
         Connection connection = null;
 
         try {

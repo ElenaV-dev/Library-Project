@@ -19,7 +19,7 @@ public class UserDAOImpl implements UserDAO {
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     private static final String ADD_USER = "INSERT INTO users (last_name, first_name, role, iin, address, phone)" +
             " VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_USER = "UPDATE users SET last_name = ?, first_name = ?, role = ? " +
+    private static final String UPDATE_USER = "UPDATE users SET last_name = ?, first_name = ?, role = ?, " +
             "iin = ?, address = ?, phone = ? WHERE id = ?";
     private static final String DELETE_USER = "DELETE FROM users WHERE id = ?";
 
@@ -81,6 +81,10 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void save(User user) throws SQLException {
 
+        if (user == null) {
+            throw new IllegalArgumentException(ErrorConstants.USER_NULL);
+        }
+
         Connection connection = null;
 
         try {
@@ -89,7 +93,13 @@ public class UserDAOImpl implements UserDAO {
             try (PreparedStatement stmt = connection.prepareStatement(ADD_USER, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, user.getLastName());
                 stmt.setString(2, user.getFirstName());
-                stmt.setString(3, user.getRole().name());
+
+                if (user.getRole() != null) {
+                    stmt.setString(3, user.getRole().name());
+                } else {
+                    stmt.setNull(3, Types.VARCHAR);
+                }
+
                 stmt.setString(4, user.getIin());
                 stmt.setString(5, user.getAddress());
                 stmt.setString(6, user.getPhone());
@@ -120,6 +130,10 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void update(User user) throws SQLException {
 
+        if (user == null) {
+            throw new IllegalArgumentException(ErrorConstants.USER_NULL);
+        }
+
         Connection connection = null;
 
         try {
@@ -128,11 +142,17 @@ public class UserDAOImpl implements UserDAO {
             try (PreparedStatement stmt = connection.prepareStatement(UPDATE_USER)) {
                 stmt.setString(1, user.getLastName());
                 stmt.setString(2, user.getFirstName());
-                stmt.setString(3, user.getRole().name());
+
+                if (user.getRole() != null) {
+                    stmt.setString(3, user.getRole().name());
+                } else {
+                    stmt.setNull(3, Types.VARCHAR);
+                }
+
                 stmt.setString(4, user.getIin());
                 stmt.setString(5, user.getAddress());
                 stmt.setString(6, user.getPhone());
-                stmt.setLong(5, user.getId());
+                stmt.setLong(7, user.getId());
 
                 int affectedRows = stmt.executeUpdate();
 
@@ -207,7 +227,15 @@ public class UserDAOImpl implements UserDAO {
         user.setId(resultSet.getLong("id"));
         user.setLastName(resultSet.getString("last_name"));
         user.setFirstName(resultSet.getString("first_name"));
-        user.setRole(UserRole.valueOf(resultSet.getString("role").toUpperCase()));
+
+        String role = resultSet.getString("role");
+
+        if (role != null) {
+            user.setRole(UserRole.valueOf(role.toUpperCase()));
+        } else {
+            user.setRole(null);
+        }
+
         user.setIin(resultSet.getString("iin"));
         user.setAddress(resultSet.getString("address"));
         user.setPhone(resultSet.getString("phone"));
