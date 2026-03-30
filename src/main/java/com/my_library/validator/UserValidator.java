@@ -1,5 +1,6 @@
 package com.my_library.validator;
 
+import com.my_library.exception.ValidationException;
 import com.my_library.model.User;
 import com.my_library.model.UserRole;
 
@@ -11,10 +12,10 @@ public class UserValidator {
     private static final String IIN_REGEX = "\\d+";
     private static final String PHONE_REGEX = "[0-9+\\-() ]+";
 
-    public static boolean isValid(User user) {
+    public static void validate(User user) throws ValidationException {
 
         if (user == null) {
-            return false;
+            throw new ValidationException("User is null");
         }
 
         String lastName = user.getLastName();
@@ -24,32 +25,41 @@ public class UserValidator {
         String address = user.getAddress();
         String phone = user.getPhone();
 
-        if (lastName == null || lastName.isBlank() || lastName.trim().length() > MAX_STRING_LENGTH) {
-            return false;
+        if (lastName == null || lastName.isBlank()) {
+            throw new ValidationException("Last name is null");
         }
 
-        if (firstName == null || firstName.isBlank() || firstName.trim().length() > MAX_STRING_LENGTH) {
-            return false;
+        if (lastName.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("Last name is too long");
+        }
+
+        if (firstName == null || firstName.isBlank()) {
+            throw new ValidationException("First name is null");
+        }
+
+        if (firstName.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("First name is too long");
         }
 
         if (role == null) {
-            return false;
+            throw new ValidationException("Role is null");
         }
 
-        if (iin == null || iin.isBlank() || iin.trim().length() != IIN_LENGTH
-                || !iin.matches(IIN_REGEX)) {
-            return false;
+        if (iin == null || iin.isBlank()) {
+            throw new ValidationException("Iin is null");
         }
 
-        if (address != null && (address.trim().length() > MAX_STRING_LENGTH
-                || address.isBlank())) {
-            return false;
+        if (iin.length() != IIN_LENGTH || !iin.matches(IIN_REGEX)) {
+            throw new ValidationException("Iin is invalid");
         }
 
-        if (phone != null && (phone.trim().length() > MAX_PHONE_LENGTH
-        || phone.isBlank() || !phone.matches(PHONE_REGEX))) {
-            return false;
+        if (address != null && address.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("Address is invalid");
         }
-            return true;
+
+        if (phone != null && (phone.length() > MAX_PHONE_LENGTH
+                || !phone.matches(PHONE_REGEX))) {
+            throw new ValidationException("Phone is invalid");
+        }
     }
 }

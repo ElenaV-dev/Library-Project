@@ -1,5 +1,6 @@
 package com.my_library.validator;
 
+import com.my_library.exception.ValidationException;
 import com.my_library.model.Author;
 
 public class AuthorValidator {
@@ -8,30 +9,36 @@ public class AuthorValidator {
     private static final int MAX_LIFE_YEARS_LENGTH = 25;
     private static final String LIFE_YEARS_REGEX = "\\d{4}(-\\d{4}|-)?";
 
-    public static boolean isValid(Author author) {
+    public static void validate(Author author) throws ValidationException {
 
         if (author == null) {
-            return false;
+            throw new ValidationException("Author is null");
         }
 
         String lastName = author.getLastName();
         String firstName = author.getFirstName();
         String lifeYears = author.getLifeYears();
 
-        if (lastName == null || lastName.isBlank() || lastName.trim().length() > MAX_STRING_LENGTH) {
-            return false;
+        if (lastName == null || lastName.isBlank()) {
+            throw new ValidationException("Last name is required");
         }
 
-        if (firstName == null || firstName.isBlank() || firstName.trim().length() > MAX_STRING_LENGTH) {
-            return false;
+        if (lastName.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("Last name is too long");
+        }
+
+        if (firstName == null || firstName.isBlank()) {
+            throw new ValidationException("First name is required");
+        }
+
+        if (firstName.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("First name is too long");
         }
 
         if (lifeYears != null
-                && (lifeYears.trim().length() > MAX_LIFE_YEARS_LENGTH
-                || !lifeYears.matches(LIFE_YEARS_REGEX)
-                || lifeYears.isBlank())) {
-            return false;
+                && (lifeYears.length() > MAX_LIFE_YEARS_LENGTH
+                || !lifeYears.matches(LIFE_YEARS_REGEX))) {
+            throw new ValidationException("Life years is invalid");
         }
-        return true;
     }
 }
