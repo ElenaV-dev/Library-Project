@@ -1,5 +1,6 @@
 package com.my_library.database.dao.interfaces;
 
+import com.my_library.exception.DaoException;
 import com.my_library.model.Book;
 
 import java.sql.SQLException;
@@ -9,15 +10,17 @@ import java.util.UUID;
 
 public interface BookDAO extends GenericDAO<Book, Long> {
 
-    Optional<Book> findByIsbn(String isbn) throws SQLException;
+    Optional<Book> findByIsbn(String isbn) throws DaoException;
 
-    List<Book> findByTitle(String title) throws SQLException;
+    List<Book> findByTitle(String title) throws DaoException;
 
-    List<Book> findByAuthorId(UUID authorId) throws SQLException;
+    List<Book> findByAuthorId(UUID authorId) throws DaoException;
 
-    void addAuthorToBook(Long bookId, UUID authorId) throws SQLException;
+    void addAuthorToBook(Long bookId, UUID authorId) throws DaoException;
 
-    void removeAuthorFromBook(Long bookId, UUID authorId) throws SQLException;
+    void removeAuthorFromBook(Long bookId, UUID authorId) throws DaoException;
 
-    boolean isExist(String isbn) throws SQLException;
+    boolean isExistByIsbn(String isbn) throws DaoException;
+
+    boolean isExistById(Long id) throws DaoException;
 }

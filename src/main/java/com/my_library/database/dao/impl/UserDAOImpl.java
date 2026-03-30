@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.UserDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.User;
 import com.my_library.model.UserRole;
 import com.my_library.util.constants.ErrorConstants;
@@ -29,7 +30,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public Optional<User> findById(Long id) throws SQLException {
+    public Optional<User> findById(Long id) throws DaoException {
 
         Connection connection = null;
 
@@ -46,6 +47,8 @@ public class UserDAOImpl implements UserDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding user by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -55,7 +58,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() throws DaoException {
 
         Connection connection = null;
         List<User> listUsers = new ArrayList<>();
@@ -70,6 +73,8 @@ public class UserDAOImpl implements UserDAO {
                     listUsers.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all users", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -79,7 +84,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void save(User user) throws SQLException {
+    public void save(User user) throws DaoException {
 
         if (user == null) {
             throw new IllegalArgumentException(ErrorConstants.USER_NULL);
@@ -108,7 +113,7 @@ public class UserDAOImpl implements UserDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "user", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -116,10 +121,12 @@ public class UserDAOImpl implements UserDAO {
                         user.setId(generatedKeys.getLong(1));
                     } else {
                         String error = String.format(ErrorConstants.FAILED_TO_CREATE, "user", "ID obtained");
-                        throw new SQLException(error);
+                        throw new DaoException(error);
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving user", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -128,7 +135,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void update(User user) throws SQLException {
+    public void update(User user) throws DaoException {
 
         if (user == null) {
             throw new IllegalArgumentException(ErrorConstants.USER_NULL);
@@ -158,9 +165,11 @@ public class UserDAOImpl implements UserDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "user", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating user", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -169,7 +178,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void deleteById(Long id) throws SQLException {
+    public void deleteById(Long id) throws DaoException {
 
         if (id == null) {
             throw new IllegalArgumentException(ErrorConstants.USER_ID_NULL);
@@ -187,9 +196,11 @@ public class UserDAOImpl implements UserDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "user", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting user", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -198,28 +209,28 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> findByLastName(String lastName) {
-        return List.of();
+    public List<User> findByLastName(String lastName) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<User> findByLastNameAndFirstName(String lastName, String firstName) {
-        return List.of();
+    public List<User> findByLastNameAndFirstName(String lastName, String firstName) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<User> findByRole(UserRole role) {
-        return List.of();
+    public List<User> findByRole(UserRole role) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public User findByIin(String iin) {
-        return null;
+    public Optional<User>  findByIin(String iin) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public User findByPhone(String phone) {
-        return null;
+    public Optional<User>  findByPhone(String phone) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     private User mapRow(ResultSet resultSet) throws SQLException {

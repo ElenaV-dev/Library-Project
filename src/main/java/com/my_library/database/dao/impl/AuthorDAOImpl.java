@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.AuthorDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.Author;
 import com.my_library.util.constants.ErrorConstants;
 
@@ -26,14 +27,14 @@ public class AuthorDAOImpl implements AuthorDAO {
             " WHERE LOWER(last_name) = LOWER(?)";
     private static final String SELECT_ALL_AUTHORS_BY_LAST_NAME_AND_FIRST_NAME =
             "SELECT * FROM authors " +
-            " WHERE LOWER(last_name) = LOWER(?) AND LOWER(first_name) = LOWER(?)";
+                    " WHERE LOWER(last_name) = LOWER(?) AND LOWER(first_name) = LOWER(?)";
 
     public AuthorDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
     @Override
-    public Optional<Author> findById(UUID uuid) throws SQLException {
+    public Optional<Author> findById(UUID uuid) throws DaoException {
         Connection connection = null;
 
         try {
@@ -48,6 +49,8 @@ public class AuthorDAOImpl implements AuthorDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding author by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -58,7 +61,7 @@ public class AuthorDAOImpl implements AuthorDAO {
 
 
     @Override
-    public List<Author> findAll() throws SQLException {
+    public List<Author> findAll() throws DaoException {
 
         Connection connection = null;
         List<Author> listAuthors = new ArrayList<>();
@@ -73,6 +76,8 @@ public class AuthorDAOImpl implements AuthorDAO {
                     listAuthors.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all authors", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -82,7 +87,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public void save(Author author) throws SQLException {
+    public void save(Author author) throws DaoException {
 
         if (author == null) {
             throw new IllegalArgumentException(ErrorConstants.AUTHOR_NULL);
@@ -107,9 +112,11 @@ public class AuthorDAOImpl implements AuthorDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "author", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving author", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -118,7 +125,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public void update(Author author) throws SQLException {
+    public void update(Author author) throws DaoException {
 
         if (author == null) {
             throw new IllegalArgumentException(ErrorConstants.AUTHOR_NULL);
@@ -139,9 +146,11 @@ public class AuthorDAOImpl implements AuthorDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "author", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating author", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -150,7 +159,8 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public void deleteById(UUID uuid) throws SQLException {
+    public void deleteById(UUID uuid) throws DaoException {
+
         if (uuid == null) {
             throw new IllegalArgumentException(ErrorConstants.AUTHOR_ID_NULL);
         }
@@ -167,9 +177,11 @@ public class AuthorDAOImpl implements AuthorDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "author", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting author", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -178,7 +190,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public List<Author> findByLastName(String lastName) throws SQLException {
+    public List<Author> findByLastName(String lastName) throws DaoException {
 
         Connection connection = null;
         List<Author> listAuthors = new ArrayList<>();
@@ -196,6 +208,8 @@ public class AuthorDAOImpl implements AuthorDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+                throw new DaoException("Error finding author by last name", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -205,7 +219,8 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public List<Author> findByLastNameAndFirstName(String lastName, String firstName) throws SQLException {
+    public List<Author> findByLastNameAndFirstName(String lastName, String firstName) throws DaoException {
+
         Connection connection = null;
         List<Author> listAuthors = new ArrayList<>();
 
@@ -223,6 +238,8 @@ public class AuthorDAOImpl implements AuthorDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+                throw new DaoException("Error finding author by last and first name", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);

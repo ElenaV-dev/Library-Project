@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.LoanDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.Loan;
 import com.my_library.util.constants.ErrorConstants;
 
@@ -29,7 +30,7 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public Optional<Loan> findById(Long id) throws SQLException {
+    public Optional<Loan> findById(Long id) throws DaoException {
 
         Connection connection = null;
 
@@ -46,6 +47,8 @@ public class LoanDAOImpl implements LoanDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding loan by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -55,7 +58,7 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public List<Loan> findAll() throws SQLException {
+    public List<Loan> findAll() throws DaoException {
 
         Connection connection = null;
         List<Loan> listLoans = new ArrayList<>();
@@ -70,6 +73,8 @@ public class LoanDAOImpl implements LoanDAO {
                     listLoans.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all loans", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -79,7 +84,7 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public void save(Loan loan) throws SQLException {
+    public void save(Loan loan) throws DaoException {
 
         if (loan == null) {
             throw new IllegalArgumentException(ErrorConstants.LOAN_NULL);
@@ -100,7 +105,7 @@ public class LoanDAOImpl implements LoanDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "loan", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -108,10 +113,12 @@ public class LoanDAOImpl implements LoanDAO {
                         loan.setId(generatedKeys.getLong(1));
                     } else {
                         String error = String.format(ErrorConstants.FAILED_TO_CREATE, "loan", "ID obtained");
-                        throw new SQLException(error);
+                        throw new DaoException(error);
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving loan", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -120,7 +127,7 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public void update(Loan loan) throws SQLException {
+    public void update(Loan loan) throws DaoException {
 
         if (loan == null) {
             throw new IllegalArgumentException(ErrorConstants.LOAN_NULL);
@@ -142,9 +149,11 @@ public class LoanDAOImpl implements LoanDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "loan", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating loan", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -153,7 +162,7 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public void deleteById(Long id) throws SQLException {
+    public void deleteById(Long id) throws DaoException {
 
         if (id == null) {
             throw new IllegalArgumentException(ErrorConstants.LOAN_ID_NULL);
@@ -171,9 +180,11 @@ public class LoanDAOImpl implements LoanDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "loan", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting loan", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -182,28 +193,28 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public List<Loan> findByBookCopyId(Long bookCopyId) {
-        return List.of();
+    public List<Loan> findByBookCopyId(Long bookCopyId) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<Loan> findByUserId(Long userId) {
-        return List.of();
+    public List<Loan> findByUserId(Long userId) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<Loan> findByLoanDate(Date loanDate) {
-        return List.of();
+    public List<Loan> findByLoanDate(Date loanDate) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<Loan> findByLoanDateBetween(Date start, Date end) {
-        return List.of();
+    public List<Loan> findByLoanDateBetween(Date start, Date end) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<Loan> findByReturnDateIsNull() {
-        return List.of();
+    public List<Loan> findByReturnDateIsNull() throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     private Loan mapRow(ResultSet resultSet) throws SQLException {

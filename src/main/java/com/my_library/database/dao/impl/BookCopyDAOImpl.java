@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.BookCopyDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.BookCopy;
 import com.my_library.model.CopyStatus;
 import com.my_library.util.constants.ErrorConstants;
@@ -28,7 +29,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public Optional<BookCopy> findById(Long id) throws SQLException {
+    public Optional<BookCopy> findById(Long id) throws DaoException {
 
         Connection connection = null;
 
@@ -45,6 +46,8 @@ public class BookCopyDAOImpl implements BookCopyDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding book copy by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -54,7 +57,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public List<BookCopy> findAll() throws SQLException {
+    public List<BookCopy> findAll() throws DaoException {
 
         Connection connection = null;
         List<BookCopy> listBookCopy = new ArrayList<>();
@@ -69,6 +72,8 @@ public class BookCopyDAOImpl implements BookCopyDAO {
                     listBookCopy.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all book copies", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -78,7 +83,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public void save(BookCopy bookCopy) throws SQLException {
+    public void save(BookCopy bookCopy) throws DaoException {
 
         if (bookCopy == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_COPY_NULL);
@@ -103,7 +108,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "bookCopy", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -111,10 +116,12 @@ public class BookCopyDAOImpl implements BookCopyDAO {
                         bookCopy.setId(generatedKeys.getLong(1));
                     } else {
                         String error = String.format(ErrorConstants.FAILED_TO_CREATE, "bookCopy", "ID obtained");
-                        throw new SQLException(error);
+                        throw new DaoException(error);
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving book copy", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -124,7 +131,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public void update(BookCopy bookCopy) throws SQLException {
+    public void update(BookCopy bookCopy) throws DaoException {
 
         if (bookCopy == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_COPY_NULL);
@@ -151,9 +158,11 @@ public class BookCopyDAOImpl implements BookCopyDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "bookCopy", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating book copy", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -163,7 +172,7 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public void deleteById(Long id) throws SQLException {
+    public void deleteById(Long id) throws DaoException {
 
         if (id == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_COPY_ID_NULL);
@@ -181,9 +190,11 @@ public class BookCopyDAOImpl implements BookCopyDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "bookCopy", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting book copy", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -192,18 +203,18 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public List<BookCopy> findByBookId(Long bookId) {
-        return List.of();
+    public List<BookCopy> findByBookId(Long bookId) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<BookCopy> findByInventoryNumber(Integer inventoryNumber) {
-        return List.of();
+    public List<BookCopy> findByInventoryNumber(Integer inventoryNumber) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<BookCopy> findByStatus(CopyStatus status) {
-        return List.of();
+    public List<BookCopy> findByStatus(CopyStatus status) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     private BookCopy mapRow(ResultSet resultSet) throws SQLException {

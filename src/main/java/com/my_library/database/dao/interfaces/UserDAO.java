@@ -1,19 +1,21 @@
 package com.my_library.database.dao.interfaces;
 
+import com.my_library.exception.DaoException;
 import com.my_library.model.User;
 import com.my_library.model.UserRole;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDAO extends GenericDAO<User, Long> {
 
-    List<User> findByLastName(String lastName);
+    List<User> findByLastName(String lastName) throws DaoException;
 
-    List<User> findByLastNameAndFirstName(String lastName, String firstName);
+    List<User> findByLastNameAndFirstName(String lastName, String firstName) throws DaoException;
 
-    List<User> findByRole(UserRole role);
+    List<User> findByRole(UserRole role) throws DaoException;
 
-    User findByIin(String iin);
+    Optional<User> findByIin(String iin) throws DaoException;
 
-    User findByPhone(String phone);
+    Optional<User> findByPhone(String phone) throws DaoException;
 }

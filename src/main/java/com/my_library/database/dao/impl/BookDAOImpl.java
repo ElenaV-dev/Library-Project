@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.BookDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.Book;
 import com.my_library.util.constants.ErrorConstants;
 
@@ -38,7 +39,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public Optional<Book> findById(Long id) throws SQLException {
+    public Optional<Book> findById(Long id) throws DaoException {
 
         Connection connection = null;
 
@@ -55,6 +56,8 @@ public class BookDAOImpl implements BookDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding book by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -65,7 +68,7 @@ public class BookDAOImpl implements BookDAO {
 
 
     @Override
-    public List<Book> findAll() throws SQLException {
+    public List<Book> findAll() throws DaoException {
 
         Connection connection = null;
         List<Book> listBooks = new ArrayList<>();
@@ -80,6 +83,8 @@ public class BookDAOImpl implements BookDAO {
                     listBooks.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all books", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -89,7 +94,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void save(Book book) throws SQLException {
+    public void save(Book book) throws DaoException {
 
         if (book == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_NULL);
@@ -110,7 +115,7 @@ public class BookDAOImpl implements BookDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "book", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -118,10 +123,12 @@ public class BookDAOImpl implements BookDAO {
                         book.setId(generatedKeys.getLong(1));
                     } else {
                         String error = String.format(ErrorConstants.FAILED_TO_CREATE, "book", "ID obtained");
-                        throw new SQLException(error);
+                        throw new DaoException(error);
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving book", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -130,12 +137,11 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void update(Book book) throws SQLException {
+    public void update(Book book) throws DaoException {
 
         if (book == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_NULL);
         }
-
 
         Connection connection = null;
 
@@ -153,9 +159,11 @@ public class BookDAOImpl implements BookDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "book", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating book", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -164,7 +172,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void deleteById(Long id) throws SQLException {
+    public void deleteById(Long id) throws DaoException {
 
         if (id == null) {
             throw new IllegalArgumentException(ErrorConstants.BOOK_ID_NULL);
@@ -182,9 +190,11 @@ public class BookDAOImpl implements BookDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "book", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting book", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -193,7 +203,8 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public Optional<Book> findByIsbn(String isbn) throws SQLException {
+    public Optional<Book> findByIsbn(String isbn) throws DaoException {
+
         Connection connection = null;
 
         try {
@@ -209,6 +220,8 @@ public class BookDAOImpl implements BookDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding book by ISBN", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -218,7 +231,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public List<Book> findByTitle(String title) throws SQLException {
+    public List<Book> findByTitle(String title) throws DaoException {
 
         Connection connection = null;
         List<Book> listBooks = new ArrayList<>();
@@ -236,6 +249,8 @@ public class BookDAOImpl implements BookDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding books by title", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -245,7 +260,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public List<Book> findByAuthorId(UUID authorId) throws SQLException {
+    public List<Book> findByAuthorId(UUID authorId) throws DaoException {
 
         Connection connection = null;
         List<Book> listBooks = new ArrayList<>();
@@ -263,6 +278,8 @@ public class BookDAOImpl implements BookDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding books by author", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -272,7 +289,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void addAuthorToBook(Long bookId, UUID authorId) throws SQLException {
+    public void addAuthorToBook(Long bookId, UUID authorId) throws DaoException {
 
         Connection connection = null;
 
@@ -287,9 +304,11 @@ public class BookDAOImpl implements BookDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_ADD, "author to book", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error adding author", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -298,7 +317,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void removeAuthorFromBook(Long bookId, UUID authorId) throws SQLException {
+    public void removeAuthorFromBook(Long bookId, UUID authorId) throws DaoException {
 
         Connection connection = null;
 
@@ -313,9 +332,11 @@ public class BookDAOImpl implements BookDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "author from book", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error removing author from book", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -324,7 +345,7 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public boolean isExist(String isbn) throws SQLException {
+    public boolean isExistByIsbn(String isbn) throws DaoException {
 
         Connection connection = null;
 
@@ -341,6 +362,36 @@ public class BookDAOImpl implements BookDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error checking if book exists by ISBN", e);
+        } finally {
+            if (connection != null) {
+                connectionPool.returnConnection(connection);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isExistById(Long id) throws DaoException {
+
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.takeConnection();
+
+            try (PreparedStatement stmt = connection.prepareStatement(SELECT_BOOK_BY_ID)) {
+                stmt.setLong(1, id);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error checking if book exists by id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);

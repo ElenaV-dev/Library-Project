@@ -2,6 +2,7 @@ package com.my_library.database.dao.impl;
 
 import com.my_library.database.connection.ConnectionPool;
 import com.my_library.database.dao.interfaces.ReaderCardDAO;
+import com.my_library.exception.DaoException;
 import com.my_library.model.Loan;
 import com.my_library.model.ReaderCard;
 import com.my_library.util.constants.ErrorConstants;
@@ -30,7 +31,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public Optional<ReaderCard> findById(Long readerId) throws SQLException {
+    public Optional<ReaderCard> findById(Long readerId) throws DaoException {
 
         Connection connection = null;
 
@@ -47,6 +48,8 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
                     }
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding reader card by reader id", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -56,7 +59,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public List<ReaderCard> findAll() throws SQLException {
+    public List<ReaderCard> findAll() throws DaoException {
 
         Connection connection = null;
         List<ReaderCard> listReaderCards = new ArrayList<>();
@@ -71,6 +74,8 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
                     listReaderCards.add(mapRow(resultSet));
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding all reader cards", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -80,7 +85,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public void save(ReaderCard readerCard) throws SQLException {
+    public void save(ReaderCard readerCard) throws DaoException {
 
         if (readerCard == null) {
             throw new IllegalArgumentException(ErrorConstants.READER_CARD_NULL);
@@ -101,9 +106,11 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_CREATE, "reader card", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error saving reader card", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -112,7 +119,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public void update(ReaderCard readerCard) throws SQLException {
+    public void update(ReaderCard readerCard) throws DaoException {
 
         if (readerCard == null) {
             throw new IllegalArgumentException(ErrorConstants.READER_CARD_NULL);
@@ -133,9 +140,11 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "reader card", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating reader card", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -144,7 +153,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public void deleteById(Long readerId) throws SQLException {
+    public void deleteById(Long readerId) throws DaoException {
 
         if (readerId == null) {
             throw new IllegalArgumentException(ErrorConstants.READER_CARD_ID_NULL);
@@ -162,9 +171,11 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
 
                 if (affectedRows == 0) {
                     String error = String.format(ErrorConstants.FAILED_TO_DELETE, "reader card", "rows affected");
-                    throw new SQLException(error);
+                    throw new DaoException(error);
                 }
             }
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting reader card", e);
         } finally {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
@@ -173,13 +184,13 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     }
 
     @Override
-    public ReaderCard findByCardNumber(String cardNumber) {
-        return null;
+    public Optional<ReaderCard>  findByCardNumber(String cardNumber) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     @Override
-    public List<ReaderCard> findByIssueDate(Date issueDate) {
-        return List.of();
+    public List<ReaderCard> findByIssueDate(Date issueDate) throws DaoException {
+        throw new UnsupportedOperationException("Method not implemented yet");
     }
 
     private ReaderCard mapRow(ResultSet resultSet) throws SQLException {
