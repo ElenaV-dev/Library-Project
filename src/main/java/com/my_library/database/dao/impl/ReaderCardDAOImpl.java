@@ -25,6 +25,7 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
     private static final String UPDATE_READER_CARD = "UPDATE reader_cards SET card_number = ?, issue_date = ?, " +
             "expiration_date = ? WHERE reader_id = ?";
     private static final String DELETE_READER_CARD = "DELETE FROM reader_cards WHERE reader_id = ?";
+    private static final String SELECT_READER_CARD_BY_CARD_NUMBER = "SELECT * FROM reader_cards WHERE card_number = ?";
 
     public ReaderCardDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -185,7 +186,30 @@ public class ReaderCardDAOImpl implements ReaderCardDAO {
 
     @Override
     public Optional<ReaderCard>  findByCardNumber(String cardNumber) throws DaoException {
-        throw new UnsupportedOperationException("Method not implemented yet");
+
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.takeConnection();
+
+            try (PreparedStatement stmt = connection.prepareStatement(SELECT_READER_CARD_BY_CARD_NUMBER)) {
+                stmt.setString(1, cardNumber);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        return Optional.of(mapRow(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding reader card by card number", e);
+        } finally {
+            if (connection != null) {
+                connectionPool.returnConnection(connection);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
