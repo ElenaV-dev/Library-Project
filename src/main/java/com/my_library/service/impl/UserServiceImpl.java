@@ -43,10 +43,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) throws ServiceException {
 
-        if (user == null) {
-            throw new ServiceException("User is null");
-        }
-
         try {
             UserValidator.validate(user);
             userDAO.save(user);
@@ -59,10 +55,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) throws ServiceException {
-
-        if (user == null) {
-            throw new ServiceException("User is null");
-        }
 
         if (user.getId() == null || user.getId() <= 0) {
             throw new ServiceException("Invalid user id");

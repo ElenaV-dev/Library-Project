@@ -18,6 +18,7 @@ public class ReaderCardServiceImpl implements ReaderCardService {
 
     @Override
     public Optional<ReaderCard> findById(Long id) throws ServiceException {
+
         if (id == null || id <= 0) {
             throw new ServiceException("Invalid reader card id");
         }
@@ -31,6 +32,7 @@ public class ReaderCardServiceImpl implements ReaderCardService {
 
     @Override
     public List<ReaderCard> findAll() throws ServiceException {
+
         try {
             return readerCardDAO.findAll();
         } catch (DaoException e) {
@@ -40,9 +42,6 @@ public class ReaderCardServiceImpl implements ReaderCardService {
 
     @Override
     public void save(ReaderCard readerCard) throws ServiceException {
-        if (readerCard == null) {
-            throw new ServiceException("Reader card is null");
-        }
 
         try {
             ReaderCardValidator.validate(readerCard);
@@ -63,10 +62,6 @@ public class ReaderCardServiceImpl implements ReaderCardService {
 
     @Override
     public void update(ReaderCard readerCard) throws ServiceException {
-
-        if (readerCard == null) {
-            throw new ServiceException("Reader card is null");
-        }
 
         if (readerCard.getReaderId() == null || readerCard.getReaderId() <= 0) {
             throw new ServiceException("Invalid reader card id");

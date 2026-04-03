@@ -44,10 +44,6 @@ public class BookCopyServiceImpl implements BookCopyService {
     @Override
     public void save(BookCopy bookCopy) throws ServiceException {
 
-        if (bookCopy == null) {
-            throw new ServiceException("Book copy is null");
-        }
-
         try {
             BookCopyValidator.validate(bookCopy);
             bookCopyDAO.save(bookCopy);
@@ -60,10 +56,6 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public void update(BookCopy bookCopy) throws ServiceException {
-
-        if (bookCopy == null) {
-            throw new ServiceException("Book copy is null");
-        }
 
         if (bookCopy.getId() == null || bookCopy.getId() <= 0) {
             throw new ServiceException("Invalid book copy id");
@@ -88,6 +80,7 @@ public class BookCopyServiceImpl implements BookCopyService {
 
     @Override
     public void deleteById(Long id) throws ServiceException {
+
         if (id == null || id <= 0) {
             throw new ServiceException("Invalid book copy id");
         }

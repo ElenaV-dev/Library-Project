@@ -19,6 +19,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Optional<Author> findById(UUID uuid) throws ServiceException {
+
         if (uuid == null) {
             throw new ServiceException("Invalid author id");
         }
@@ -32,6 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> findAll() throws ServiceException {
+
         try {
             return authorDAO.findAll();
         } catch (DaoException e) {
@@ -41,9 +43,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void save(Author author) throws ServiceException {
-        if (author == null) {
-            throw new ServiceException("Author is null");
-        }
 
         try {
             AuthorValidator.validate(author);
@@ -57,9 +56,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void update(Author author) throws ServiceException {
-        if (author == null) {
-            throw new ServiceException("Author is null");
-        }
 
         if (author.getUuid() == null) {
             throw new ServiceException("Invalid author id");
@@ -83,6 +79,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteById(UUID uuid) throws ServiceException {
+
         if (uuid == null) {
             throw new ServiceException("Invalid author id");
         }

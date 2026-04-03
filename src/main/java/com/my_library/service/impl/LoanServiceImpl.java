@@ -32,6 +32,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<Loan> findAll() throws ServiceException {
+
         try {
             return loanDAO.findAll();
         } catch (DaoException e) {
@@ -41,9 +42,6 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void save(Loan loan) throws ServiceException {
-        if (loan == null) {
-            throw new ServiceException("Loan is null");
-        }
 
         try {
             LoanValidator.validate(loan);
@@ -57,9 +55,6 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void update(Loan loan) throws ServiceException {
-        if (loan == null) {
-            throw new ServiceException("Loan is null");
-        }
 
         if (loan.getId() == null || loan.getId() <= 0) {
             throw new ServiceException("Invalid loan id");
@@ -84,6 +79,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public void deleteById(Long id) throws ServiceException {
+
         if (id == null || id <= 0) {
             throw new ServiceException("Invalid loan id");
         }

@@ -43,10 +43,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public void save(Book book) throws ServiceException {
 
-        if (book == null) {
-            throw new ServiceException("Book is null");
-        }
-
         try {
             BookValidator.validate(book);
 
@@ -66,10 +62,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void update(Book book) throws ServiceException {
-
-        if (book == null) {
-            throw new ServiceException("Book is null");
-        }
 
         if (book.getId() == null || book.getId() <= 0) {
             throw new ServiceException("Invalid book id");
