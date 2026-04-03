@@ -1,6 +1,7 @@
 package com.my_library.util.constants;
 
 public final class ErrorConstants {
+
     public static final String FAILED_TO_CONNECT_TO_THE_DATABASE = "Failed to connect to the database. " +
             "Check your connection parameters";
     public static final String ERROR_CONNECTING_TO_THE_DATABASE = "Error connecting to the database";
