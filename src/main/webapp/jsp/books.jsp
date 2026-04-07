@@ -15,6 +15,7 @@
 <tr>
 <th>ID</th>
 <th>Title</th>
+<th>Year</th>
 <th>ISBN</th>
 <th>Publisher</th>
 </tr>
@@ -24,6 +25,7 @@
 <tr>
 <td>${book.id}</td>
 <td>${book.title}</td>
+<td>${book.year}</td>
 <td>${book.isbn}</td>
 <td>${book.publisher}</td>
 </tr>
