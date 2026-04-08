@@ -5,10 +5,12 @@ import com.my_library.util.constants.MessageConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -16,25 +18,52 @@ public final class ConnectionPool {
 
     private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
     private static volatile ConnectionPool instance;
+    private BlockingQueue<Connection> connectionQueue;
+
     private String url;
     private String user;
     private String password;
-    private ResourceBundle properties = ResourceBundle.getBundle("ConnectionPool");
-    private final int POOL_SIZE = Integer.parseInt(properties.getString("db.poolSize"));
-    private BlockingQueue<Connection> connectionQueue = new ArrayBlockingQueue<>(POOL_SIZE);
+    private int poolSize;
+
 
     private ConnectionPool() {
-        init();
+        loadProperties();
+        initPool();
     }
 
-    private void init() {
-        this.url = properties.getString("db.url");
-        this.user = properties.getString("db.user");
-        this.password = properties.getString("db.password");
-        initPoolData();
+    private void loadProperties() {
+        Properties properties = new Properties();
+
+        try (InputStream input = ConnectionPool.class.getClassLoader()
+                    .getResourceAsStream("ConnectionPool.properties")) {
+
+            if (input == null) {
+                LOGGER.error("Error finding properties");
+                throw new RuntimeException("Cannot find ConnectionPool.properties in classpath");
+            }
+
+            properties.load(input);
+        } catch (IOException e) {
+            LOGGER.error("Error loading properties", e);
+            throw new RuntimeException("Failed to load ConnectionPool.properties", e);
+        }
+
+        url = properties.getProperty("db.url");
+        user = properties.getProperty("db.user");
+        password = properties.getProperty("db.password");
+        poolSize = Integer.parseInt(properties.getProperty("db.poolSize", "5"));
+
+        connectionQueue = new ArrayBlockingQueue<>(poolSize);
+
+        try {
+            Class.forName(properties.getProperty("db.driver"));
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("Error finding database driver", e);
+            throw new RuntimeException("Database driver not found",e);
+        }
     }
 
-    private void initPoolData() {
+    private void initPool() {
         try (Connection testConnection = DriverManager.getConnection(url, user, password)) {
             LOGGER.info(MessageConstants.TEST_CONNECTION_SUCCESSFUL);
         } catch (SQLException e) {
@@ -44,7 +73,7 @@ public final class ConnectionPool {
 
         Connection connection;
 
-        while (connectionQueue.size() < POOL_SIZE) {
+        while (connectionQueue.size() < poolSize) {
             try {
                 connection = DriverManager.getConnection(url, user, password);
                 connectionQueue.put(connection);
@@ -81,7 +110,7 @@ public final class ConnectionPool {
     }
 
     public synchronized void returnConnection(Connection connection) {
-        if (connection != null && connectionQueue.size() < POOL_SIZE) {
+        if (connection != null && connectionQueue.size() < poolSize) {
             try {
                 connectionQueue.put(connection);
             } catch (InterruptedException e) {
@@ -92,3 +121,4 @@ public final class ConnectionPool {
         }
     }
 }
+
