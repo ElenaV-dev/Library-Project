@@ -28,8 +28,7 @@ public class RoleFilter implements Filter {
         UserRole role = (UserRole) req.getSession().getAttribute("userRole");
 
         if (role == null) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Login is required");
-            return;
+            role = UserRole.GUEST;
         }
 
         if (entity == null || entity.isBlank() || action == null || action.isBlank()) {
