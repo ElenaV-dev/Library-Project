@@ -48,6 +48,11 @@ public class FrontController extends HttpServlet {
         String entity = req.getParameter("entity");
         String action = req.getParameter("action");
 
+        if (entity == null && action == null) {
+            bookController.findAllForIndex(req, resp);
+            return;
+        }
+
         if (entity == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Entity is required");
             return;

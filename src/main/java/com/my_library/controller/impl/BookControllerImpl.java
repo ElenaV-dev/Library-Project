@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class BookControllerImpl implements BookController {
 
             if (book.isPresent()) {
                 req.setAttribute("book", book.get());
-                req.getRequestDispatcher("/book.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/book.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book not found");
             }
@@ -66,7 +67,7 @@ public class BookControllerImpl implements BookController {
             List<Book> books = bookService.findAll();
 
             req.setAttribute("books", books);
-            req.getRequestDispatcher("/books.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/books.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all books", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
@@ -212,4 +213,21 @@ public class BookControllerImpl implements BookController {
         }
         resp.sendRedirect(UriConstants.BOOK_FIND_ALL_URI);
     }
+
+    public void findAllForIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        try {
+            List<Book> books = bookService.findAll();
+
+            req.setAttribute("books", books);
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+        } catch (ServiceException e) {
+            LOGGER.error("Error finding all books", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ServletException e) {
+            LOGGER.error("Error forwarding to index.jsp", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
+        }
+    }
 }
+
