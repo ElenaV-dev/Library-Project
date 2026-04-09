@@ -46,7 +46,7 @@ public class UserControllerImpl implements UserController {
 
             if (user.isPresent()) {
                 req.setAttribute("user", user.get());
-                req.getRequestDispatcher("/user.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/user.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
             }
@@ -66,7 +66,7 @@ public class UserControllerImpl implements UserController {
             List<User> users = userService.findAll();
 
             req.setAttribute("users", users);
-            req.getRequestDispatcher("/users.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/users.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all users", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");

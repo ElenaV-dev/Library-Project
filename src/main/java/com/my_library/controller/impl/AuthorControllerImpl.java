@@ -46,7 +46,7 @@ public class AuthorControllerImpl implements AuthorController {
 
             if (author.isPresent()) {
                 req.setAttribute("author", author.get());
-                req.getRequestDispatcher("/author.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/author.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Author not found");
             }
@@ -66,7 +66,7 @@ public class AuthorControllerImpl implements AuthorController {
             List<Author> authors = authorService.findAll();
 
             req.setAttribute("authors", authors);
-            req.getRequestDispatcher("/authors.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/authors.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all authors", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");

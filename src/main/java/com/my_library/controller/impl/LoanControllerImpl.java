@@ -47,7 +47,7 @@ public class LoanControllerImpl implements LoanController {
 
             if (loan.isPresent()) {
                 req.setAttribute("loan", loan.get());
-                req.getRequestDispatcher("/loan.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/loan.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Loan not found");
             }
@@ -67,7 +67,7 @@ public class LoanControllerImpl implements LoanController {
             List<Loan> loans = loanService.findAll();
 
             req.setAttribute("loans", loans);
-            req.getRequestDispatcher("/loans.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/loans.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all loans", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");

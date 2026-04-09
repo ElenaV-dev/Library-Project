@@ -46,7 +46,7 @@ public class BookCopyControllerImpl implements BookCopyController {
 
             if (bookCopy.isPresent()) {
                 req.setAttribute("bookCopy", bookCopy.get());
-                req.getRequestDispatcher("/bookCopy.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/bookCopy.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book copy not found");
             }
@@ -66,7 +66,7 @@ public class BookCopyControllerImpl implements BookCopyController {
             List<BookCopy> bookCopies = bookCopyService.findAll();
 
             req.setAttribute("bookCopies", bookCopies);
-            req.getRequestDispatcher("/bookCopies.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/bookCopies.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all book copies", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");

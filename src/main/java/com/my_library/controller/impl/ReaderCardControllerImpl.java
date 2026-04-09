@@ -47,7 +47,7 @@ public class ReaderCardControllerImpl implements ReaderCardController {
 
             if (readerCard.isPresent()) {
                 req.setAttribute("readerCard", readerCard.get());
-                req.getRequestDispatcher("/readerCard.jsp").forward(req, resp);
+                req.getRequestDispatcher("/jsp/readerCard.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reader card not found");
             }
@@ -67,7 +67,7 @@ public class ReaderCardControllerImpl implements ReaderCardController {
             List<ReaderCard> readerCards = readerCardService.findAll();
 
             req.setAttribute("readerCards", readerCards);
-            req.getRequestDispatcher("/readerCards.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/readerCards.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOGGER.error("Error finding all reader cards", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
