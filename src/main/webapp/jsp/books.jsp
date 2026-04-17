@@ -10,24 +10,26 @@
 
 <h2>Books</h2>
 
+<div>
+    <a href="${pageContext.request.contextPath}/controller?entity=user&action=logout">
+        Выйти
+    </a>
+</div>
+
 <table border="1">
 
 <tr>
 <th>ID</th>
 <th>Title</th>
-<th>Year</th>
-<th>ISBN</th>
-<th>Publisher</th>
+
 </tr>
 
 <c:forEach var="book" items="${books}">
 
 <tr>
-<td>${book.id}</td>
-<td>${book.title}</td>
-<td>${book.year}</td>
-<td>${book.isbn}</td>
-<td>${book.publisher}</td>
+    <td>${book.id}</td>
+    <td>${book.title}</td>
+
 </tr>
 
 </c:forEach>
