@@ -21,7 +21,7 @@
 <tr>
 <th>ID</th>
 <th>Title</th>
-
+<th>Action</th>
 </tr>
 
 <c:forEach var="book" items="${books}">
@@ -29,7 +29,10 @@
 <tr>
     <td>${book.id}</td>
     <td>${book.title}</td>
-
+    <td>
+        <a href="${pageContext.request.contextPath}/controller?entity=book&action=findById&id=${book.id}">
+            Просмотреть</a>
+    </td>
 </tr>
 
 </c:forEach>
