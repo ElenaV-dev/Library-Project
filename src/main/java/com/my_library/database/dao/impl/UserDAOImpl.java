@@ -18,11 +18,12 @@ public class UserDAOImpl implements UserDAO {
 
     private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
-    private static final String ADD_USER = "INSERT INTO users (last_name, first_name, role, iin, address, phone)" +
-            " VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String ADD_USER = "INSERT INTO users (last_name, first_name, role, iin, email, phone," +
+            " password) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_USER = "UPDATE users SET last_name = ?, first_name = ?, role = ?, " +
-            "iin = ?, address = ?, phone = ? WHERE id = ?";
+            "iin = ?, email = ?, phone = ?, password = ? WHERE id = ?";
     private static final String DELETE_USER = "DELETE FROM users WHERE id = ?";
+    private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
 
     public UserDAOImpl(ConnectionPool connectionPool) {
 
@@ -106,8 +107,9 @@ public class UserDAOImpl implements UserDAO {
                 }
 
                 stmt.setString(4, user.getIin());
-                stmt.setString(5, user.getAddress());
+                stmt.setString(5, user.getEmail());
                 stmt.setString(6, user.getPhone());
+                stmt.setString(7, user.getPassword());
 
                 int affectedRows = stmt.executeUpdate();
 
@@ -157,9 +159,10 @@ public class UserDAOImpl implements UserDAO {
                 }
 
                 stmt.setString(4, user.getIin());
-                stmt.setString(5, user.getAddress());
+                stmt.setString(5, user.getEmail());
                 stmt.setString(6, user.getPhone());
-                stmt.setLong(7, user.getId());
+                stmt.setString(7, user.getPassword());
+                stmt.setLong(8, user.getId());
 
                 int affectedRows = stmt.executeUpdate();
 
@@ -209,6 +212,33 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) throws DaoException {
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.takeConnection();
+
+            try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
+                stmt.setString(1, email);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        return Optional.of(mapRow(resultSet));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding user by email", e);
+        } finally {
+            if (connection != null) {
+                connectionPool.returnConnection(connection);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public List<User> findByLastName(String lastName) throws DaoException {
         throw new UnsupportedOperationException("Method not implemented yet");
     }
@@ -248,8 +278,9 @@ public class UserDAOImpl implements UserDAO {
         }
 
         user.setIin(resultSet.getString("iin"));
-        user.setAddress(resultSet.getString("address"));
+        user.setEmail(resultSet.getString("email"));
         user.setPhone(resultSet.getString("phone"));
+        user.setPassword(resultSet.getString("password"));
         return user;
     }
 }

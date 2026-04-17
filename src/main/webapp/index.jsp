@@ -4,9 +4,22 @@
 <h1>Библиотека</h1>
 
 <div>
-    <a href="login.jsp">Войти</a>
-    <a href="register.jsp">Зарегистрироваться</a>
+    <a href="${pageContext.request.contextPath}/jsp/login.jsp">Войти</a>
+    <a href="${pageContext.request.contextPath}/jsp/register.jsp">Зарегистрироваться</a>
 </div>
+
+<hr>
+
+<h2>Поиск книги</h2>
+
+<form action="${pageContext.request.contextPath}/controller" method="get">
+    <input type="hidden" name="entity" value="book">
+    <input type="hidden" name="action" value="findByTitle">
+
+    <input type="text" name="title" placeholder="Введите название книги"/>
+
+    <button type="submit">Поиск</button>
+</form>
 
 <hr>
 

@@ -5,6 +5,7 @@ import com.my_library.model.UserRole;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class RoleFilter implements Filter {
@@ -22,16 +23,36 @@ public class RoleFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
+        System.out.println("METHOD = " + req.getMethod());
+        System.out.println("CONTENT TYPE = " + req.getContentType());
+        System.out.println("QUERY = " + req.getQueryString());
+
         String entity = req.getParameter("entity");
         String action = req.getParameter("action");
 
-        UserRole role = (UserRole) req.getSession().getAttribute("userRole");
+        HttpSession session = req.getSession(false);
 
-        if (role == null) {
-            role = UserRole.GUEST;
+        UserRole role = UserRole.GUEST;
+
+        if (session != null) {
+            Object roleObj = session.getAttribute("userRole");
+
+            if (roleObj instanceof UserRole) {
+                role = (UserRole) roleObj;
+            }
         }
 
-        if (entity == null || entity.isBlank() || action == null || action.isBlank()) {
+        if (entity == null || action == null) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        if ("user".equals(entity) && "login".equals(action)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        if ("user".equals(entity) && "register".equals(action)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -40,7 +61,6 @@ public class RoleFilter implements Filter {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
@@ -100,7 +120,7 @@ public class RoleFilter implements Filter {
         switch (entity) {
             case ENTITY_BOOK:
             case ENTITY_AUTHOR:
-                return action.equals("findAll");
+                return action.equals("findAll") || action.equals("findByTitle");
 
             default:
                 return false;

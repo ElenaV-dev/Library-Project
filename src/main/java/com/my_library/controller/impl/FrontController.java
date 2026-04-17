@@ -27,6 +27,10 @@ public class FrontController extends HttpServlet {
     private static final String ACTION_SAVE = "save";
     private static final String ACTION_UPDATE = "update";
     private static final String ACTION_DELETE_BY_ID = "deleteById";
+    private static final String ACTION_LOGIN = "login";
+    private static final String ACTION_LOGOUT = "logout";
+    private static final String ACTION_REGISTER = "register";
+
 
     private final BookController bookController = new BookControllerImpl();
     private final AuthorController authorController = new AuthorControllerImpl();
@@ -141,7 +145,6 @@ public class FrontController extends HttpServlet {
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown author action");
         }
-
     }
 
     private void handleBookCopy(String action, HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -165,7 +168,6 @@ public class FrontController extends HttpServlet {
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown book copy action");
         }
-
     }
 
     private void handleUser(String action, HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -185,6 +187,15 @@ public class FrontController extends HttpServlet {
                 break;
             case ACTION_DELETE_BY_ID:
                 userController.deleteById(req, resp);
+                break;
+            case ACTION_LOGIN:
+                userController.login(req, resp);
+                break;
+            case ACTION_LOGOUT:
+                userController.logout(req, resp);
+                break;
+            case ACTION_REGISTER:
+                userController.register(req, resp);
                 break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown user action");

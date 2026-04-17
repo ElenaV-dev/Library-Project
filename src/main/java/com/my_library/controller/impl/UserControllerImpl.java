@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -83,8 +84,9 @@ public class UserControllerImpl implements UserController {
         String firstName = req.getParameter("firstName");
         String roleParam = req.getParameter("role");
         String iin = req.getParameter("iin");
-        String address = req.getParameter("address");
+        String email = req.getParameter("email");
         String phone = req.getParameter("phone");
+        String password = req.getParameter("password");
 
         if (lastName == null || lastName.isBlank()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Last name is required");
@@ -115,13 +117,24 @@ public class UserControllerImpl implements UserController {
             return;
         }
 
+        if (email == null || email.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is required");
+            return;
+        }
+
+        if (password == null || password.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is required");
+            return;
+        }
+
         User user = new User();
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setRole(role);
         user.setIin(iin);
-        user.setAddress(address);
+        user.setEmail(email);
         user.setPhone(phone);
+        user.setPassword(password);
 
         try {
             userService.save(user);
@@ -142,8 +155,9 @@ public class UserControllerImpl implements UserController {
         String firstName = req.getParameter("firstName");
         String roleParam = req.getParameter("role");
         String iin = req.getParameter("iin");
-        String address = req.getParameter("address");
+        String email = req.getParameter("email");
         String phone = req.getParameter("phone");
+        String password = req.getParameter("password");
 
         if (idParam == null || idParam.isBlank()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id is required");
@@ -187,14 +201,20 @@ public class UserControllerImpl implements UserController {
             return;
         }
 
+        if (email == null || email.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is required");
+            return;
+        }
+
         User user = new User();
         user.setId(id);
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setRole(role);
         user.setIin(iin);
-        user.setAddress(address);
+        user.setEmail(email);
         user.setPhone(phone);
+        user.setPassword(password);
 
         try {
             userService.update(user);
@@ -234,7 +254,108 @@ public class UserControllerImpl implements UserController {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             return;
         }
-        resp.sendRedirect(UriConstants.USER_FIND_ALL_URI);
+        resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
+    }
+
+    @Override
+    public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+
+        if (email == null || email.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is required");
+            return;
+        }
+
+        if (password == null || password.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is required");
+            return;
+        }
+
+        try {
+            Optional<User> userOpt = userService.login(email, password);
+
+            if (userOpt.isPresent()) {
+                HttpSession oldSession = req.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
+
+                HttpSession session = req.getSession(true);
+
+                User user = userOpt.get();
+                session.setAttribute("user", user);
+                session.setAttribute("userRole", user.getRole());
+
+                resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
+            } else {
+                req.setAttribute("error", "Invalid email or password");
+                req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+            }
+
+        } catch (ServiceException e) {
+            LOGGER.error("Error login", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ServletException e) {
+            LOGGER.error("Error forwarding to login.jsp", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
+        }
+    }
+
+    @Override
+    public void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+        resp.sendRedirect("controller");
+    }
+
+    @Override
+    public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        String lastName = req.getParameter("lastName");
+        String firstName = req.getParameter("firstName");
+        String iin = req.getParameter("iin");
+        String email = req.getParameter("email");
+        String phone = req.getParameter("phone");
+        String password = req.getParameter("password");
+
+        if (lastName == null || lastName.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Last name is required");
+            return;
+        }
+
+        if (firstName == null || firstName.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "First name is required");
+            return;
+        }
+
+        if (iin == null || iin.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "IIN is required");
+            return;
+        }
+
+        if (email == null || email.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is required");
+            return;
+        }
+
+        if (password == null || password.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is required");
+            return;
+        }
+
+        try {
+            userService.register(lastName, firstName, iin, email, phone, password);
+            LOGGER.info("User registered: iin={}", iin);
+        } catch (ServiceException e) {
+            LOGGER.error("Error registering user last name={}, iin={}", lastName, iin, e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            return;
+        }
+        resp.sendRedirect(UriConstants.BOOK_FIND_ALL_URI);
     }
 }
 
