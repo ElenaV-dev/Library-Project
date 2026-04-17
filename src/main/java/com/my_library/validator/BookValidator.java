@@ -25,13 +25,7 @@ public class BookValidator {
 
         Integer currentYear = LocalDate.now().getYear();
 
-        if (title == null || title.isBlank()) {
-            throw new ValidationException("Title is required");
-        }
-
-        if (title.length() > MAX_STRING_LENGTH) {
-            throw new ValidationException("Title is too long");
-        }
+        validateTitle(title);
 
         if (isbn == null || isbn.isBlank()) {
             throw new ValidationException("ISBN is required");
@@ -46,11 +40,22 @@ public class BookValidator {
         }
 
         if (year != null && (year < MIN_YEAR || year > currentYear)) {
-            throw new ValidationException("Years is invalid");
+            throw new ValidationException("Year is invalid");
         }
 
         if (publisher != null && publisher.length() > MAX_STRING_LENGTH) {
             throw new ValidationException("Publisher is too long");
+        }
+    }
+
+    public static void validateTitle(String title) throws ValidationException {
+
+        if (title == null || title.isBlank()) {
+            throw new ValidationException("Title is required");
+        }
+
+        if (title.length() > MAX_STRING_LENGTH) {
+            throw new ValidationException("Title is too long");
         }
     }
 }

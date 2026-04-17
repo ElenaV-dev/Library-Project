@@ -12,5 +12,4 @@ public interface UserService extends GenericService<User, Long> {
     void register(String lastName, String firstName, String iin, String email, String phone,
                   String password) throws ServiceException;
 
-
 }

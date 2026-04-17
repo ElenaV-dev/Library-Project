@@ -7,4 +7,6 @@ import java.io.IOException;
 public interface BookController extends GenericController {
 
     void findAllForIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+
+    void findByTitle(HttpServletRequest req, HttpServletResponse resp) throws IOException;
 }

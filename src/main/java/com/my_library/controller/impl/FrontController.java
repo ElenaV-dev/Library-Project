@@ -30,7 +30,7 @@ public class FrontController extends HttpServlet {
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";
     private static final String ACTION_REGISTER = "register";
-
+    private static final String ACTION_FIND_BY_TITLE = "findByTitle";
 
     private final BookController bookController = new BookControllerImpl();
     private final AuthorController authorController = new AuthorControllerImpl();
@@ -118,6 +118,9 @@ public class FrontController extends HttpServlet {
                 break;
             case ACTION_DELETE_BY_ID:
                 bookController.deleteById(req, resp);
+                break;
+            case ACTION_FIND_BY_TITLE:
+                bookController.findByTitle(req, resp);
                 break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown book action");

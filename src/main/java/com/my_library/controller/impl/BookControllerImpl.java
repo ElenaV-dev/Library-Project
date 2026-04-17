@@ -229,5 +229,28 @@ public class BookControllerImpl implements BookController {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
         }
     }
+
+    @Override
+    public void findByTitle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String title = req.getParameter("title");
+
+        if (title == null || title.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Title is required");
+            return;
+        }
+
+        try {
+            List<Book> books = bookService.findByTitle(title);
+
+            req.setAttribute("books", books);
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+        } catch (ServiceException e) {
+            LOGGER.error("Error finding books by title: {}", title, e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ServletException e) {
+            LOGGER.error("Error forwarding to index.jsp", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
+        }
+    }
 }
 

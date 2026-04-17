@@ -102,4 +102,16 @@ public class BookServiceImpl implements BookService {
             throw new ServiceException("Failed to delete book", e);
         }
     }
+
+    @Override
+    public List<Book> findByTitle(String title) throws ServiceException {
+        try {
+            BookValidator.validateTitle(title);
+            return bookDAO.findByTitle(title);
+        } catch (ValidationException e) {
+            throw new ServiceException(e.getMessage(), e);
+        } catch (DaoException e) {
+            throw new ServiceException("Failed to find books by title", e);
+        }
+    }
 }
