@@ -20,4 +20,35 @@
 <a href="controller?entity=book&action=findAll">Back to list</a>
 
 </body>
+
+<br><br>
+
+<c:if test="${sessionScope.userRole == 'READER'}">
+    <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
+        <input type="hidden" name="entity" value="loan">
+        <input type="hidden" name="action" value="requestBook">
+        <input type="hidden" name="bookId" value="${book.id}">
+        <button type="submit">Запросить книгу</button>
+    </form>
+
+    <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
+        <input type="hidden" name="entity" value="loan">
+        <input type="hidden" name="action" value="returnBook">
+        <input type="hidden" name="bookId" value="${book.id}">
+        <button type="submit">Вернуть книгу</button>
+    </form>
+</c:if>
+
+<c:if test="${sessionScope.userRole == 'ADMIN'}">
+
+    <a href="${pageContext.request.contextPath}/controller?entity=book&action=showUpdate&id=${book.id}">
+        <button>Редактировать книгу</button>
+    </a>
+
+    <a href="${pageContext.request.contextPath}/controller?entity=book&action=delete&id=${book.id}">
+        <button>Удалить книгу</button>
+    </a>
+
+</c:if>
+
 </html>

@@ -57,6 +57,11 @@ public class RoleFilter implements Filter {
             return;
         }
 
+        if ("user".equals(entity) && "logout".equals(action)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         if (!isAllowed(role, entity, action)) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
             return;
@@ -108,7 +113,7 @@ public class RoleFilter implements Filter {
                 return action.equals("findById") || action.equals("findAll");
 
             case ENTITY_LOAN:
-                return action.equals("findById");
+                return action.equals("requestBook") || action.equals("returnBook");
 
             default:
                 return false;

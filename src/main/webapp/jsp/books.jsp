@@ -16,6 +16,14 @@
     </a>
 </div>
 
+<c:if test="${sessionScope.userRole == 'ADMIN'}">
+    <div style="margin:10px 0;">
+        <a href="${pageContext.request.contextPath}/jsp/book-save.jsp">
+            <button>Добавить книгу</button>
+        </a>
+    </div>
+</c:if>
+
 <table border="1">
 
 <tr>
