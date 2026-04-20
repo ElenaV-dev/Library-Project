@@ -45,9 +45,16 @@
         <button>Редактировать книгу</button>
     </a>
 
-    <a href="${pageContext.request.contextPath}/controller?entity=book&action=delete&id=${book.id}">
-        <button>Удалить книгу</button>
-    </a>
+     <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
+            <input type="hidden" name="entity" value="book">
+            <input type="hidden" name="action" value="deleteById">
+            <input type="hidden" name="id" value="${book.id}">
+
+            <button type="submit"
+                    onclick="return confirm('Вы точно хотите удалить книгу?');">
+                Удалить книгу
+            </button>
+        </form>
 
 </c:if>
 

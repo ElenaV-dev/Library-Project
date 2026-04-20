@@ -211,7 +211,7 @@ public class BookControllerImpl implements BookController {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             return;
         }
-        resp.sendRedirect(UriConstants.BOOK_FIND_ALL_URI);
+        resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
     }
 
     public void findAllForIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException {
