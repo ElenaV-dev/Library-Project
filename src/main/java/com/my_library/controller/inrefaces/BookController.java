@@ -9,4 +9,6 @@ public interface BookController extends GenericController {
     void findAllForIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException;
 
     void findByTitle(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+
+    void showUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException;
 }

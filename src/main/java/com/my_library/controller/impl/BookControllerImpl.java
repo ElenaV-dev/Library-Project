@@ -181,7 +181,7 @@ public class BookControllerImpl implements BookController {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             return;
         }
-        resp.sendRedirect(UriConstants.BOOK_FIND_ALL_URI);
+        resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
     }
 
     @Override
@@ -249,6 +249,42 @@ public class BookControllerImpl implements BookController {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
         } catch (ServletException e) {
             LOGGER.error("Error forwarding to index.jsp", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
+        }
+    }
+
+    @Override
+    public void showUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idParam = req.getParameter("id");
+
+        if (idParam == null || idParam.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id is required");
+            return;
+        }
+
+        Long id;
+
+        try {
+            id = Long.parseLong(idParam);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id format");
+            return;
+        }
+
+        try {
+            Optional<Book> book = bookService.findById(id);
+
+            if (book.isPresent()) {
+                req.setAttribute("book", book.get());
+                req.getRequestDispatcher("/jsp/book-edit.jsp").forward(req, resp);
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book not found");
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("Error showing update page for book id={}", id, e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+        } catch (ServletException e) {
+            LOGGER.error("Error forwarding to book-edit.jsp", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "View error");
         }
     }
