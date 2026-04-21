@@ -4,6 +4,7 @@ import com.my_library.controller.inrefaces.BookController;
 import com.my_library.exception.ServiceException;
 import com.my_library.model.Book;
 import com.my_library.service.factory.FactoryService;
+import com.my_library.service.interfaces.BookCopyService;
 import com.my_library.service.interfaces.BookService;
 import com.my_library.util.constants.UriConstants;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +22,7 @@ public class BookControllerImpl implements BookController {
 
     private static final Logger LOGGER = LogManager.getLogger(BookControllerImpl.class);
     private final BookService bookService = FactoryService.getInstance().getBookService();
+    private final BookCopyService bookCopyService = FactoryService.getInstance().getBookCopyService();
 
 
     @Override
@@ -45,8 +47,11 @@ public class BookControllerImpl implements BookController {
         try {
             Optional<Book> book = bookService.findById(id);
 
+            int available = bookCopyService.countAvailableCopiesByBookId(id);
+
             if (book.isPresent()) {
                 req.setAttribute("book", book.get());
+                req.setAttribute("availableCopies", available);
                 req.getRequestDispatcher("/jsp/book.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Book not found");

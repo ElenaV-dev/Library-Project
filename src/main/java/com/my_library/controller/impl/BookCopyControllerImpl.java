@@ -2,10 +2,12 @@ package com.my_library.controller.impl;
 
 import com.my_library.controller.inrefaces.BookCopyController;
 import com.my_library.exception.ServiceException;
+import com.my_library.model.Book;
 import com.my_library.model.BookCopy;
 import com.my_library.model.CopyStatus;
 import com.my_library.service.factory.FactoryService;
 import com.my_library.service.interfaces.BookCopyService;
+import com.my_library.service.interfaces.BookService;
 import com.my_library.util.constants.UriConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

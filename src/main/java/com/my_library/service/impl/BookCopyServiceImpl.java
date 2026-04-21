@@ -91,4 +91,18 @@ public class BookCopyServiceImpl implements BookCopyService {
             throw new ServiceException("Failed to delete book copy", e);
         }
     }
+
+    @Override
+    public int countAvailableCopiesByBookId(Long bookId) throws ServiceException {
+
+        if (bookId == null || bookId <= 0) {
+            throw new ServiceException("Invalid book id");
+        }
+
+        try {
+            return bookCopyDAO.countAvailableCopiesByBookId(bookId);
+        } catch (DaoException e) {
+            throw new ServiceException("Failed to count available copies for book id=" + bookId, e);
+        }
+    }
 }

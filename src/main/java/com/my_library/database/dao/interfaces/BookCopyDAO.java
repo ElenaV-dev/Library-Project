@@ -14,4 +14,6 @@ public interface BookCopyDAO extends GenericDAO<BookCopy, Long> {
 
     List<BookCopy> findByStatus(CopyStatus status) throws DaoException;
 
+    int countAvailableCopiesByBookId(Long bookId) throws DaoException;
+
 }

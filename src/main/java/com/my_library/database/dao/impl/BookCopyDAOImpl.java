@@ -23,6 +23,8 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     private static final String UPDATE_BOOK_COPY = "UPDATE book_copies SET book_id = ?, inventory_number = ?, " +
             "status = ? WHERE id = ?";
     private static final String DELETE_BOOK_COPY = "DELETE FROM book_copies WHERE id = ?";
+    private static final String COUNT_AVAILABLE_BY_BOOK_ID = "SELECT COUNT(*) FROM book_copies " +
+            "WHERE book_id = ? AND status = 'AVAILABLE'";
 
     public BookCopyDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -217,6 +219,35 @@ public class BookCopyDAOImpl implements BookCopyDAO {
         throw new UnsupportedOperationException("Method not implemented yet");
     }
 
+    @Override
+    public int countAvailableCopiesByBookId(Long bookId) throws DaoException {
+
+        Connection connection = null;
+        int availableCopies = 0;
+
+        try {
+            connection = connectionPool.takeConnection();
+
+            try (PreparedStatement stmt = connection.prepareStatement(COUNT_AVAILABLE_BY_BOOK_ID)) {
+                stmt.setLong(1, bookId);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+
+                    if (resultSet.next()) {
+                        availableCopies = resultSet.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error counting available copies", e);
+        } finally {
+            if (connection != null) {
+                connectionPool.returnConnection(connection);
+            }
+        }
+        return availableCopies;
+    }
+
     private BookCopy mapRow(ResultSet resultSet) throws SQLException {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setId(resultSet.getLong("id"));
@@ -231,4 +262,5 @@ public class BookCopyDAOImpl implements BookCopyDAO {
         }
         return bookCopy;
     }
+
 }

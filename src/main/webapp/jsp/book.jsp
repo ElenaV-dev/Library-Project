@@ -7,36 +7,41 @@
 </head>
 <body>
 
-<h2>Book Details</h2>
+<h2>Данные о книге</h2>
 
 <p><strong>ID:</strong> ${book.id}</p>
-<p><strong>Title:</strong> ${book.title}</p>
-<p><strong>Year:</strong> ${book.year}</p>
+<p><strong>Название:</strong> ${book.title}</p>
+<p><strong>Год выпуска:</strong> ${book.year}</p>
 <p><strong>ISBN:</strong> ${book.isbn}</p>
-<p><strong>Publisher:</strong> ${book.publisher}</p>
+<p><strong>Издательство:</strong> ${book.publisher}</p>
+<p><strong>Доступно экземпляров:</strong> ${availableCopies}</p>
 
 <br>
 
-<a href="controller?entity=book&action=findAll">Back to list</a>
+<a href="controller?entity=book&action=findAll">Назад</a>
 
 </body>
 
 <br><br>
 
 <c:if test="${sessionScope.userRole == 'READER'}">
-    <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
-        <input type="hidden" name="entity" value="loan">
-        <input type="hidden" name="action" value="requestBook">
-        <input type="hidden" name="bookId" value="${book.id}">
-        <button type="submit">Запросить книгу</button>
-    </form>
+    <c:choose>
 
-    <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
-        <input type="hidden" name="entity" value="loan">
-        <input type="hidden" name="action" value="returnBook">
-        <input type="hidden" name="bookId" value="${book.id}">
-        <button type="submit">Вернуть книгу</button>
-    </form>
+            <c:when test="${availableCopies > 0}">
+                <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
+                    <input type="hidden" name="entity" value="loan">
+                    <input type="hidden" name="action" value="requestBook">
+                    <input type="hidden" name="bookId" value="${book.id}">
+                    <button type="submit">Запросить книгу</button>
+                </form>
+            </c:when>
+
+            <c:otherwise>
+                <p style="color:red;"><strong>Книга недоступна</strong></p>
+            </c:otherwise>
+
+        </c:choose>
+
 </c:if>
 
 <c:if test="${sessionScope.userRole == 'ADMIN'}">
