@@ -25,6 +25,9 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     private static final String DELETE_BOOK_COPY = "DELETE FROM book_copies WHERE id = ?";
     private static final String COUNT_AVAILABLE_BY_BOOK_ID = "SELECT COUNT(*) FROM book_copies " +
             "WHERE book_id = ? AND status = 'AVAILABLE'";
+    private static final String UPDATE_STATUS = "UPDATE book_copies SET status = ? WHERE id = ?";
+    private static final String SELECT_FIRST_AVAILABLE_COPY = "SELECT * FROM book_copies " +
+            "WHERE book_id = ? AND status = 'AVAILABLE' LIMIT 1";
 
     public BookCopyDAOImpl(ConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
@@ -54,6 +57,24 @@ public class BookCopyDAOImpl implements BookCopyDAO {
             if (connection != null) {
                 connectionPool.returnConnection(connection);
             }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<BookCopy> findById(Long id, Connection conn) throws DaoException {
+
+        try (PreparedStatement stmt = conn.prepareStatement(SELECT_BOOK_COPY_BY_ID)) {
+            stmt.setLong(1, id);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding book copy by id", e);
         }
         return Optional.empty();
     }
@@ -205,21 +226,6 @@ public class BookCopyDAOImpl implements BookCopyDAO {
     }
 
     @Override
-    public List<BookCopy> findByBookId(Long bookId) throws DaoException {
-        throw new UnsupportedOperationException("Method not implemented yet");
-    }
-
-    @Override
-    public List<BookCopy> findByInventoryNumber(Integer inventoryNumber) throws DaoException {
-        throw new UnsupportedOperationException("Method not implemented yet");
-    }
-
-    @Override
-    public List<BookCopy> findByStatus(CopyStatus status) throws DaoException {
-        throw new UnsupportedOperationException("Method not implemented yet");
-    }
-
-    @Override
     public int countAvailableCopiesByBookId(Long bookId) throws DaoException {
 
         Connection connection = null;
@@ -248,6 +254,43 @@ public class BookCopyDAOImpl implements BookCopyDAO {
         return availableCopies;
     }
 
+    @Override
+    public void updateStatus(Long id, CopyStatus status, Connection conn) throws DaoException {
+
+        try (PreparedStatement stmt = conn.prepareStatement(UPDATE_STATUS)) {
+
+            stmt.setString(1, status.name());
+            stmt.setLong(2, id);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                String error = String.format(ErrorConstants.FAILED_TO_UPDATE, "status", "rows affected");
+                throw new DaoException(error);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error updating status", e);
+        }
+    }
+
+    @Override
+    public Optional<BookCopy> findFirstAvailableCopyByBookId(Long bookId, Connection conn) throws DaoException {
+
+        try (PreparedStatement stmt = conn.prepareStatement(SELECT_FIRST_AVAILABLE_COPY)) {
+            stmt.setLong(1, bookId);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error finding available book copy", e);
+        }
+        return Optional.empty();
+    }
+
     private BookCopy mapRow(ResultSet resultSet) throws SQLException {
         BookCopy bookCopy = new BookCopy();
         bookCopy.setId(resultSet.getLong("id"));
@@ -262,5 +305,4 @@ public class BookCopyDAOImpl implements BookCopyDAO {
         }
         return bookCopy;
     }
-
 }

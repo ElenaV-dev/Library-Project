@@ -8,7 +8,7 @@
 
 <body>
 
-<h2>Books</h2>
+<h2>Книги</h2>
 
 <div>
     <a href="${pageContext.request.contextPath}/controller?entity=user&action=logout">

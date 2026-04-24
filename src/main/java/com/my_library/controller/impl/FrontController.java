@@ -32,6 +32,8 @@ public class FrontController extends HttpServlet {
     private static final String ACTION_REGISTER = "register";
     private static final String ACTION_FIND_BY_TITLE = "findByTitle";
     private static final String ACTION_SHOW_UPDATE = "showUpdate";
+    private static final String ACTION_ISSUE = "issue";
+    private static final String ACTION_REQUEST_BOOK = "requestBook";
 
     private final BookController bookController = new BookControllerImpl();
     private final AuthorController authorController = new AuthorControllerImpl();
@@ -249,6 +251,12 @@ public class FrontController extends HttpServlet {
                 break;
             case ACTION_DELETE_BY_ID:
                 loanController.deleteById(req, resp);
+                break;
+            case ACTION_ISSUE:
+                loanController.issue(req, resp);
+                break;
+            case ACTION_REQUEST_BOOK:
+                loanController.requestBook(req, resp);
                 break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown loan action");

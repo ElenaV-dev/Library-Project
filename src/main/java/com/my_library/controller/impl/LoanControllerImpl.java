@@ -3,6 +3,7 @@ package com.my_library.controller.impl;
 import com.my_library.controller.inrefaces.LoanController;
 import com.my_library.exception.ServiceException;
 import com.my_library.model.Loan;
+import com.my_library.model.User;
 import com.my_library.service.factory.FactoryService;
 import com.my_library.service.interfaces.LoanService;
 import com.my_library.util.constants.UriConstants;
@@ -278,6 +279,70 @@ public class LoanControllerImpl implements LoanController {
             return;
         }
         resp.sendRedirect(UriConstants.LOAN_FIND_ALL_URI);
+    }
+
+    @Override
+    public void issue(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        String idParam = req.getParameter("id");
+
+        if (idParam == null || idParam.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id is required");
+            return;
+        }
+
+        Long id;
+
+        try {
+            id = Long.parseLong(idParam);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id format");
+            return;
+        }
+
+        try {
+            loanService.issueLoan(id);
+            LOGGER.warn("Loan issued: id={}", id);
+        } catch (ServiceException e) {
+            LOGGER.error("Error issuing loan id={}", id, e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            return;
+        }
+        resp.sendRedirect(req.getContextPath() + "/controller?entity=loan&action=findAll");
+    }
+
+    @Override
+    public void requestBook(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String bookIdParam = req.getParameter("bookId");
+
+        if (bookIdParam == null || bookIdParam.isBlank()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Book id is required");
+            return;
+        }
+
+        Long bookId;
+
+        try {
+            bookId = Long.parseLong(bookIdParam);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid book id format");
+            return;
+        }
+
+        try {
+            User user = (User) req.getSession().getAttribute("user");
+            Long userId = user.getId();
+
+            loanService.requestBook(bookId, userId);
+            LOGGER.info("Loan requested: book id={}", bookId);
+        } catch (ServiceException e) {
+            LOGGER.error("Error requesting book copy bookId={}", bookId, e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            return;
+        }
+        resp.sendRedirect(req.getContextPath() +
+                "/controller?entity=book&action=findById&id="
+                + bookId + "&success=requested");
     }
 }
 

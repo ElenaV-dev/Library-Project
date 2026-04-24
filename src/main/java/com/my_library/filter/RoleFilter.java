@@ -23,10 +23,6 @@ public class RoleFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
-        System.out.println("METHOD = " + req.getMethod());
-        System.out.println("CONTENT TYPE = " + req.getContentType());
-        System.out.println("QUERY = " + req.getQueryString());
-
         String entity = req.getParameter("entity");
         String action = req.getParameter("action");
 
@@ -113,7 +109,7 @@ public class RoleFilter implements Filter {
                 return action.equals("findById") || action.equals("findAll");
 
             case ENTITY_LOAN:
-                return action.equals("requestBook") || action.equals("returnBook");
+                return action.equals("requestBook");
 
             default:
                 return false;

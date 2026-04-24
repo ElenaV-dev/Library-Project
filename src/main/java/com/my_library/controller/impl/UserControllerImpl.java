@@ -287,7 +287,21 @@ public class UserControllerImpl implements UserController {
                 session.setAttribute("user", user);
                 session.setAttribute("userRole", user.getRole());
 
-                resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
+                switch (user.getRole()) {
+
+                    case ADMIN, READER:
+                        resp.sendRedirect(req.getContextPath() +
+                                "/controller?entity=book&action=findAll");
+                        break;
+
+                    case LIBRARIAN:
+                        resp.sendRedirect(req.getContextPath() +
+                                "/controller?entity=loan&action=findAll");
+                        break;
+
+                    default:
+                        resp.sendRedirect(req.getContextPath() + "/index.jsp");
+                }
             } else {
                 req.setAttribute("error", "Invalid email or password");
                 req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
@@ -309,7 +323,7 @@ public class UserControllerImpl implements UserController {
         if (session != null) {
             session.invalidate();
         }
-        resp.sendRedirect("controller");
+        resp.sendRedirect(req.getContextPath() + "/controller");
     }
 
     @Override

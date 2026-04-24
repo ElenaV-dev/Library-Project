@@ -25,22 +25,27 @@
 <br><br>
 
 <c:if test="${sessionScope.userRole == 'READER'}">
+
     <c:choose>
 
-            <c:when test="${availableCopies > 0}">
-                <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
-                    <input type="hidden" name="entity" value="loan">
-                    <input type="hidden" name="action" value="requestBook">
-                    <input type="hidden" name="bookId" value="${book.id}">
-                    <button type="submit">Запросить книгу</button>
-                </form>
-            </c:when>
+        <c:when test="${availableCopies > 0 and param.success != 'requested'}">
+            <form action="${pageContext.request.contextPath}/controller" method="post" style="display:inline;">
+                <input type="hidden" name="entity" value="loan">
+                <input type="hidden" name="action" value="requestBook">
+                <input type="hidden" name="bookId" value="${book.id}">
+                <button type="submit">Запросить книгу</button>
+            </form>
+        </c:when>
 
-            <c:otherwise>
-                <p style="color:red;"><strong>Книга недоступна</strong></p>
-            </c:otherwise>
+        <c:when test="${param.success == 'requested'}">
+            <p style="color:green;"><strong>Книга успешно запрошена</strong></p>
+        </c:when>
 
-        </c:choose>
+        <c:otherwise>
+            <p style="color:red;"><strong>Книга недоступна</strong></p>
+        </c:otherwise>
+
+    </c:choose>
 
 </c:if>
 

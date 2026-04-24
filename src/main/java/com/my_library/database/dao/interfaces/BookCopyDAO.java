@@ -4,16 +4,17 @@ import com.my_library.exception.DaoException;
 import com.my_library.model.BookCopy;
 import com.my_library.model.CopyStatus;
 
-import java.util.List;
+import java.sql.Connection;
+import java.util.Optional;
 
 public interface BookCopyDAO extends GenericDAO<BookCopy, Long> {
 
-    List<BookCopy> findByBookId(Long bookId) throws DaoException;
-
-    List<BookCopy> findByInventoryNumber(Integer inventoryNumber) throws DaoException;
-
-    List<BookCopy> findByStatus(CopyStatus status) throws DaoException;
+    Optional<BookCopy> findById(Long id, Connection conn) throws DaoException;
 
     int countAvailableCopiesByBookId(Long bookId) throws DaoException;
+
+    void updateStatus(Long id, CopyStatus status, Connection conn) throws DaoException;
+
+    Optional<BookCopy> findFirstAvailableCopyByBookId(Long bookId, Connection conn) throws DaoException;
 
 }
