@@ -9,7 +9,7 @@ public interface UserService extends GenericService<User, Long> {
 
     Optional<User> login(String email, String password) throws ServiceException;
 
-    void register(String lastName, String firstName, String iin, String email, String phone,
+    User register(String lastName, String firstName, String iin, String email, String phone,
                   String password) throws ServiceException;
 
 }

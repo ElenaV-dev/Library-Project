@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(String lastName, String firstName, String iin, String email, String phone, String password) throws ServiceException {
+    public User register(String lastName, String firstName, String iin, String email, String phone, String password) throws ServiceException {
         try {
             if (userDAO.findByEmail(email).isPresent()) {
                 throw new ServiceException("User already exists");
@@ -157,6 +157,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(hashedPassword);
 
             userDAO.save(user);
+            return user;
         } catch (ValidationException e) {
             throw new ServiceException(e.getMessage(), e);
         } catch (DaoException e) {

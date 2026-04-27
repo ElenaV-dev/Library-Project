@@ -362,14 +362,20 @@ public class UserControllerImpl implements UserController {
         }
 
         try {
-            userService.register(lastName, firstName, iin, email, phone, password);
-            LOGGER.info("User registered: iin={}", iin);
+            User user = userService.register(lastName, firstName, iin, email, phone, password);
+
+            HttpSession session = req.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("userRole", user.getRole());
+
+            LOGGER.info("User registered and logged in: id={}, email={}", user.getId(), user.getEmail());
+
         } catch (ServiceException e) {
             LOGGER.error("Error registering user last name={}, iin={}", lastName, iin, e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             return;
         }
-        resp.sendRedirect(UriConstants.BOOK_FIND_ALL_URI);
+        resp.sendRedirect(req.getContextPath() + "/controller?entity=book&action=findAll");
     }
 }
 
