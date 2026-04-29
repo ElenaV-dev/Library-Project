@@ -14,9 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class BookControllerImpl implements BookController {
 
@@ -83,16 +81,17 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public void save(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void save(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
         String title = req.getParameter("title");
         String yearParam = req.getParameter("year");
         String isbn = req.getParameter("isbn");
         String publisher = req.getParameter("publisher");
 
+        Map<String, String> errors = new HashMap<>();
+
         if (title == null || title.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Title is required");
-            return;
+            errors.put("title", "Введите название");
         }
 
         Integer year = null;
@@ -101,13 +100,23 @@ public class BookControllerImpl implements BookController {
             try {
                 year = Integer.parseInt(yearParam);
             } catch (NumberFormatException e) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year format");
-                return;
+                errors.put("year", "Некорректный год");
             }
         }
 
         if (isbn == null || isbn.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ISBN is required");
+            errors.put("isbn", "Введите ISBN");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+
+            req.setAttribute("title", title);
+            req.setAttribute("year", yearParam);
+            req.setAttribute("isbn", isbn);
+            req.setAttribute("publisher", publisher);
+
+            req.getRequestDispatcher("/jsp/book-save.jsp").forward(req, resp);
             return;
         }
 

@@ -31,22 +31,49 @@
 
                 <div class="mb-3">
                     <label class="form-label">Название</label>
-                    <input class="form-control" type="text" name="title">
+                    <input class="form-control ${not empty errors.title ? 'is-invalid' : ''}"
+                           type="text"
+                           name="title"
+                           value="${title}">
+                           <c:if test="${not empty errors.title}">
+                               <div class="invalid-feedback">
+                                   ${errors.title}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Год</label>
-                    <input class="form-control" type="number" name="year">
+                    <input class="form-control ${not empty errors.year ? 'is-invalid' : ''}"
+                           type="number"
+                           name="year"
+                           value="${year}">
+                           <c:if test="${not empty errors.year}">
+                               <div class="invalid-feedback">
+                                   ${errors.year}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">ISBN</label>
-                    <input class="form-control" type="text" name="isbn">
+                    <input class="form-control ${not empty errors.isbn ? 'is-invalid' : ''}"
+                           type="text"
+                           name="isbn"
+                           value="${isbn}">
+                           <c:if test="${not empty errors.isbn}">
+                               <div class="invalid-feedback">
+                                   ${errors.isbn}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Издатель</label>
-                    <input class="form-control" type="text" name="publisher">
+                   <input class="form-control"
+                          type="text"
+                          name="publisher"
+                          value="${publisher}">
                 </div>
 
                 <button class="btn btn-success w-100" type="submit">
@@ -54,12 +81,6 @@
                 </button>
 
             </form>
-
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger mt-3">
-                    ${error}
-                </div>
-            </c:if>
 
         </div>
     </div>
