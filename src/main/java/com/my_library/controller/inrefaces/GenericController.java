@@ -13,7 +13,7 @@ public interface GenericController {
 
     void save(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException;
 
-    void update(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+    void update(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException;
 
     void deleteById(HttpServletRequest req, HttpServletResponse resp) throws IOException;
 }

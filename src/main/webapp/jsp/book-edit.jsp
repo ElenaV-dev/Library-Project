@@ -32,26 +32,44 @@
 
                 <div class="mb-3">
                     <label class="form-label">Название</label>
-                    <input class="form-control"
+                    <input class="form-control ${not empty errors and not empty errors.title ? 'is-invalid' : ''}"
                            type="text"
                            name="title"
                            value="${book.title}">
+
+                           <c:if test="${not empty errors and not empty errors.title}">
+                               <div class="invalid-feedback">
+                                   ${errors.title}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Год</label>
-                    <input class="form-control"
+                    <input class="form-control ${not empty errors and not empty errors.year ? 'is-invalid' : ''}"
                            type="number"
                            name="year"
-                           value="${book.year}">
+                           value="${not empty yearParam ? yearParam : book.year}"
+
+                           <c:if test="${not empty errors and not empty errors.year}">
+                               <div class="invalid-feedback">
+                                   ${errors.year}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">ISBN</label>
-                    <input class="form-control"
+                    <input class="form-control ${not empty errors and not empty errors.isbn ? 'is-invalid' : ''}"
                            type="text"
                            name="isbn"
                            value="${book.isbn}">
+
+                           <c:if test="${not empty errors and not empty errors.isbn}">
+                               <div class="invalid-feedback">
+                                   ${errors.isbn}
+                               </div>
+                           </c:if>
                 </div>
 
                 <div class="mb-3">
@@ -76,12 +94,6 @@
                 </div>
 
             </form>
-
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger mt-3">
-                    ${error}
-                </div>
-            </c:if>
 
         </div>
     </div>

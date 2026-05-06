@@ -21,7 +21,7 @@ public class BookControllerImpl implements BookController {
     private static final Logger LOGGER = LogManager.getLogger(BookControllerImpl.class);
     private final BookService bookService = FactoryService.getInstance().getBookService();
     private final BookCopyService bookCopyService = FactoryService.getInstance().getBookCopyService();
-
+    private final Integer YEAR_SIZE = 4;
 
     @Override
     public void findById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -138,7 +138,7 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public void update(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void update(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
         String idParam = req.getParameter("id");
         String title = req.getParameter("title");
@@ -146,37 +146,56 @@ public class BookControllerImpl implements BookController {
         String isbn = req.getParameter("isbn");
         String publisher = req.getParameter("publisher");
 
+        Map<String, String> errors = new HashMap<>();
+
         if (idParam == null || idParam.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Id is required");
-            return;
+            errors.put("id", "Введите ID");
         }
 
-        Long id;
+        Long id = null;
         try {
             id = Long.parseLong(idParam);
         } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id format");
-            return;
+            errors.put("id", "Некорректный ID");
         }
 
         if (title == null || title.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Title is required");
-            return;
+            errors.put("title", "Введите название");
         }
 
         Integer year = null;
 
         if (yearParam != null && !yearParam.isBlank()) {
+
+            if (yearParam.length() != YEAR_SIZE) {
+                errors.put("year", "Год должен быть из 4 цифр");
+            }
+
             try {
                 year = Integer.parseInt(yearParam);
             } catch (NumberFormatException e) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year format");
-                return;
+                errors.put("year", "Некорректный год");
             }
         }
 
         if (isbn == null || isbn.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "ISBN is required");
+            errors.put("isbn", "Введите ISBN");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+
+            Book book = new Book();
+            book.setId(id);
+            book.setTitle(title);
+            book.setYear(year);
+            book.setIsbn(isbn);
+            book.setPublisher(publisher);
+
+            req.setAttribute("book", book);
+            req.setAttribute("yearParam", yearParam);
+
+            req.getRequestDispatcher("/jsp/book-edit.jsp").forward(req, resp);
             return;
         }
 
@@ -186,6 +205,8 @@ public class BookControllerImpl implements BookController {
         book.setYear(year);
         book.setIsbn(isbn);
         book.setPublisher(publisher);
+
+        req.setAttribute("book", book);
 
         try {
             bookService.update(book);
