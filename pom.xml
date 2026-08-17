@@ -57,4 +57,7 @@
 
     </dependencies>
 
+    <build>
+        <finalName>my-app</finalName>
+    </build>
 </project>
