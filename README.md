@@ -64,6 +64,7 @@ src
     └── webapp
         ├── jsp
         └── WEB-INF
+```
 
 ## Database
 
@@ -90,6 +91,13 @@ The application also implements role-based access control for different types of
 - PostgreSQL
 - Apache Tomcat
 
+  ### 1. Clone the repository
+
+```bash
+git clone https://github.com/ElenaV-dev/Library-Project.git
+cd Library-Project
+```
+
 ### Database Setup
 
 1. Create a PostgreSQL database.
@@ -104,6 +112,7 @@ The application also implements role-based access control for different types of
 
 ```bash
 mvn clean package
+```
 4. Deploy the generated WAR file to Apache Tomcat.
 5. Start the Tomcat server.
 6. Open the application in a browser.
