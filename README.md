@@ -77,7 +77,7 @@ The database contains tables for storing information about users, books, and lib
 
 ### Database Schema
 
-![Database Schema](docs/database-schema.png)
+<img src="docs/database-schema.png" alt="Login" width="600">
 
 ## Authentication and Security
 
@@ -143,27 +143,27 @@ http://localhost:8080/my-app
 
 ### Main page
 
-![Main page](docs/library-main-page.png)
+<img src="docs/library-main-page.png" alt="Login" width="600">
 
 ### Login
 
-![Login page](docs/login.png)
+<img src="docs/login.png" alt="Login" width="300">
 
 ### Books
 
-![Books](docs/books.png)
+<img src="docs/books.png" alt="Login" width="600">
 
 ### Book
 
-![Book](docs/book.png)
+<img src="docs/book.png" alt="Login" width="600">
 
 ### Admin page 
 
-![Admin page](docs/admin-page-book.png)
+<img src="docs/admin-page-book.png" alt="Admin page" width="600">
 
 ### Librarian page
 
-![Librarian page](docs/librarian-page.png)
+<img src="docs/librarian-page.png" alt="Login" width="600">
 
 ## What I Learned
 
@@ -171,10 +171,15 @@ While developing this project, I practiced:
 
 - Building Java web applications using Servlets and JSP
 - Working with PostgreSQL through JDBC
-- Applying the DAO and Service layer patterns
-- Separating application responsibilities into different layers
-- Implementing user authentication
-- Working with password hashing using BCrypt
+- Implementing a database connection pool using BlockingQueue
+- Designing a layered architecture with Controller, Service, and DAO layers
+- Applying the Factory Pattern for object creation
+- Working with HTTP requests, sessions, and servlets
+- Implementing user authentication and role-based access control
+- Validating user input
+- Handling application-specific exceptions
+- Using BCrypt for password hashing
 - Using Maven for dependency management and project builds
 - Implementing application logging with Log4j2
+- Using Bootstrap to build the user interface
 - Deploying a WAR application to Apache Tomcat
