@@ -20,6 +20,7 @@ The application implements user authentication, book management and library oper
 - **Java Servlets**
 - **JSP**
 - **JSTL**
+- **Bootstrap**
 - **JDBC**
 - **PostgreSQL**
 - **Log4j2**
@@ -36,6 +37,8 @@ The main layers are:
 - **Service** — contains the application's business logic and coordinates operations between controllers and DAOs.
 - **DAO** — responsible for communication with the PostgreSQL database.
 - **Model** — contains entities and data objects used by the application.
+
+The Factory Pattern is used to encapsulate object creation and reduce coupling between application components.
 
 The general request flow is:
 
@@ -97,35 +100,70 @@ The application also implements role-based access control for different types of
 git clone https://github.com/ElenaV-dev/Library-Project.git
 cd Library-Project
 ```
+ ### 2. Create the database
 
-### Database Setup
+Create a PostgreSQL database named test_db.
 
-1. Create a PostgreSQL database.
-2. Configure the database connection in the application configuration.
-3. Execute the required SQL scripts.
+ ### 3. Create database tables
 
-### Application Setup
+Execute the scriptsCreateTables.sql script against the test_db database.
 
-1. Clone the repository.
-2. Configure the database connection.
-3. Build the project:
+ ### 4. Insert test data
+
+To populate the database with sample data, execute the provided scriptsFillTales.sql for inserting data.
+
+ ### 5. Configure the database connection
+
+The database connection is configured in ConnectionPool.properties.
+
+ ### 6. Build the project
+
+Run:
 
 ```bash
 mvn clean package
 ```
-4. Deploy the generated WAR file to Apache Tomcat.
-5. Start the Tomcat server.
-6. Open the application in a browser.
+After a successful build, the my-app.war will be generated in the target directory.
+
+ ### 7. Deploy the application
+
+Copy my-app.war to the webapps directory of Apache Tomcat.
+
+ ### 8. Start Tomcat
+
+Start the Apache Tomcat server.
+
+ ### 9. Open the application
+
+Open the following URL in your browser:
+
+http://localhost:8080/my-app
 
 ## Screenshots
 
+### Main page
+
+![Main page](docs/library-main-page.png)
+
 ### Login
 
-![Login page](docs/screenshots/login.png)
+![Login page](docs/login.png)
 
 ### Books
 
-![Books page](docs/screenshots/books.png)
+![Books](docs/books.png)
+
+### Book
+
+![Book](docs/book.png)
+
+### Admin page 
+
+![Admin page](docs/admin-page-book.png)
+
+### Librarian page
+
+![Librarian page](docs/librarian-page.png)
 
 ## What I Learned
 
