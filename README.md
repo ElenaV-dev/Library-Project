@@ -1,4 +1,4 @@
-Library Management System
+## Library Management System
 
 Library Management System is a Java web application for managing books, users and library operations. A learning project built with Java Servlets, JSP, PostgreSQL and JDBC.
 The application implements user authentication, book management and library operations with a layered architecture.
